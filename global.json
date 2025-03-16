@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.0/src/parser/GlobalConfigSchema.json",
   "configsList": [
+    "opacity-study",
     "tutorial",
     "example-brush-interactions",
     "example-cleveland",
@@ -37,6 +38,9 @@
 
   ],
   "configs": {
+    "opacity-study": {
+      "path": "opacity-study/config.json"
+    },
     "tutorial": {
       "path": "tutorial/config.json"
     },
