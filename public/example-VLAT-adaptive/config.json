@@ -1,0 +1,101 @@
+{
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/StudyConfigSchema.json",
+  "studyMetadata": {
+    "title": "Adaptive VLAT (Visualization Literacy Assessment Test)",
+    "version": "pilot",
+    "authors": [
+      "The reVISit Team"
+    ],
+    "date": "2023-06-14",
+    "description": "A replication of the VLAT questionnaire by Lee et al., TVCG 2016 (doi:10.1109/TVCG.2016.2598920) randomized between visualizations, using image stimuli.",
+    "organizations": [
+      "University of Utah",
+      "WPI",
+      "University of Toronto"
+    ]
+  },
+  "uiConfig": {
+    "contactEmail": "contact@revisit.dev",
+    "helpTextPath": "example-VLAT-adaptive/assets/help.md",
+    "logoPath": "revisitAssets/revisitLogoSquare.svg",
+    "withProgressBar": true,
+    "autoDownloadStudy": false,
+    "sidebar": false,
+    "studyEndMsg": "Thank you for completing the study. You may close this window",
+    "urlParticipantIdParam": "PROLIFIC_ID"
+  },
+  "importedLibraries": ["demographics"],
+  "components": {
+    "introduction": {
+      "type": "markdown",
+      "path": "example-VLAT-full-randomized/assets/introduction.md",
+      "response": [
+        {
+          "id": "prolificId",
+          "prompt": "Please enter your prolificId",
+          "location": "belowStimulus",
+          "type": "shortText",
+          "placeholder": "id",
+          "paramCapture": "PROLIFIC_ID"
+        }
+      ]
+    },
+    "consent": {
+      "type": "markdown",
+      "path": "example-VLAT-full-randomized/assets/consent.md",
+      "response": [
+        {
+          "id": "userInitials",
+          "prompt": "Please type your initials below. These are not used in our analyses, but required for the consent process.",
+          "location": "belowStimulus",
+          "type": "shortText",
+          "placeholder": "Your Initials"
+        }
+      ]
+    },
+    "VlatTrial": {
+      "type": "react-component",
+      "path": "example-VLAT-adaptive/assets/VlatTrial.tsx",
+      "response": [
+        {
+          "id": "vlatResp",
+          "prompt": "You select: ",
+          "location": "belowStimulus",
+          "type": "reactive",
+          "hidden": true
+        }
+      ],
+      "correctAnswer": [
+        {
+          "id": "vlatResp",
+          "answer": "A"
+        }
+      ],
+      "provideFeedback": false,
+      "allowFailedTraining": true,
+      "trainingAttempts": 1
+    },
+    "feedback": {
+      "type": "react-component",
+      "path": "example-VLAT-adaptive/assets/Feedback.tsx",
+      "provideFeedback": false,
+      "allowFailedTraining": true,
+      "trainingAttempts": 1,
+      "response": []
+    }
+  },
+  "sequence": {
+    "order": "fixed",
+    "components": [
+      "introduction",
+      "consent",
+      {
+        "id": "dynamicBlock",
+        "order": "dynamic",
+        "functionPath": "example-VLAT-adaptive/assets/Dynamic.tsx"
+      },
+      "feedback",
+      "$demographics.co.demographics"
+    ]
+  }
+}
