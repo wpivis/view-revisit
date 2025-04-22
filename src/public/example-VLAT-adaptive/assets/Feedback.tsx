@@ -8,7 +8,6 @@ export default function Feedback({ answers }: StimulusParams<any>) {
   const taskid = 'vlatResp';
   const images = import.meta.glob('../assets/vlatImg/*.png', { eager: true });
   const imgMap: Record<string, string> = {};
-
   for (const path in images) {
     if (path) {
       const fileName = path.split('/').pop()?.replace('.png', '') || '';
@@ -21,14 +20,19 @@ export default function Feedback({ answers }: StimulusParams<any>) {
     .filter(([key, _]) => key.startsWith('dynamicBlock'))
     .filter(([_, value]) => value.endTime > -1);
 
-  const score = +topAnswer[topAnswer.length - 1][1].answer.score;
+  let score = 0;
+  let correctRecord = [];
   let correctNum = 0;
-  const correctRecord = topAnswer.map((item) => {
-    const ans = item[1].answer[taskid];
-    const correctAns = item[1].correctAnswer[0].answer;
-    if (ans === correctAns) correctNum += 1;
-    return ans === correctAns;
-  });
+
+  if (topAnswer) {
+    score = +topAnswer[topAnswer.length - 1][1].answer.score;
+    correctRecord = topAnswer.map((item) => {
+      const ans = item[1].answer[taskid];
+      const correctAns = item[1].correctAnswer[0].answer;
+      if (ans === correctAns) correctNum += 1;
+      return ans === correctAns;
+    });
+  }
 
   // console.log(topAnswer, 'topAnswer');
 
@@ -37,6 +41,8 @@ export default function Feedback({ answers }: StimulusParams<any>) {
       <Center>
         <Title>
           Your score is
+          {' '}
+          {' '}
           {+score.toFixed(2)}
         </Title>
       </Center>

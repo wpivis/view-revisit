@@ -6,8 +6,9 @@ import { StimulusParams } from '../../../store/types';
 import { VLATQuestions } from './vlatQ';
 
 export default function VlatTrial({ parameters, setAnswer, answers }: StimulusParams<{ activeQuestionIdx: number, qidx: number, score: number }>) {
+  // console.log(answers);
   const taskid = 'vlatResp';
-  const userAnswer = answers[`dynamicBlock_2_VlatTrial_${parameters.qidx}`].answer[taskid];
+  const userAnswer = answers[`dynamicBlock_1_VlatTrial_${parameters.qidx}`].answer[taskid];
   const [currentanswer, setCurrentAnswer] = useState<number>(userAnswer ? +userAnswer : -1);
   const activeQuestion = VLATQuestions.filter((q) => q.originID === parameters.activeQuestionIdx)[0];
   const images = import.meta.glob('../assets/vlatImg/*.png', { eager: true });
