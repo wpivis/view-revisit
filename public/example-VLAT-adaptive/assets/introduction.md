@@ -1,18 +1,14 @@
 # Introduction
 
-This is a reVISit adaptation of the original VLAT questionnaire from Kwon et al.
+This is a reVISit adaptation of the adaptive VLAT questionnaire from Cui et al [link](https://mucollective.northwestern.edu/files/2023-adaptive.pdf).
 
-From their study: 
-
-## What is VLAT?
+## What is VLAT/Adaptive VLAT?
 
 VLAT is developed to measure users' ability to read, understand, and
-use data visualizations to solve problems. This test is a web
-adaptation of the original test.
+use data visualizations to solve problems, developed by Lee et al [Link](https://www.bckwon.com/pdf/vlat.pdf)
+The original test contains 52 multiple-choice questions about 12 data
+visualizations.
 
-The test contains 52 multiple-choice questions about 12 data
-visualizations. It will take approximately 30 minutes to finish this
-test. For each question, you will be given a static data
-visualization (right) and a problem to solve (left). Choose the BEST
-answer to the questions. If you don't know the answer, select
-'skip'. We suggest maximizing your browser window."
+In the adaptive VLAT, each subsequent question is selected based on the test-taker's performance. Only 27 questions are needed to achieve the similar measurement precision as the full-length original VLAT.
+
+
