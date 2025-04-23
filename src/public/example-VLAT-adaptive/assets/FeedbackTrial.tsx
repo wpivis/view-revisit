@@ -41,7 +41,7 @@ export default function FeedbackTrial({
           <Radio.Group
             name="question"
             label={activeQuestion.question}
-            value={`${+userAnswer}`}
+            value={`${userAnswer}`}
             size="md"
           >
             <Stack mt={20}>
@@ -49,7 +49,7 @@ export default function FeedbackTrial({
                     activeQuestion.options.map((op:string, idx:number) => (
                       <Radio
                         disabled
-                        value={`${idx}`}
+                        value={`${String.fromCharCode(65 + idx)}`}
                         label={`${String.fromCharCode(65 + idx)}. ${op}`}
                         key={`op${idx}`}
                       />
