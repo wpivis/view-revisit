@@ -76,7 +76,7 @@ export default function Feedback({ answers }: StimulusParams<any>) {
         </Card>
       </Center>
       <Modal opened={opened} onClose={close} size="auto" title="">
-        <FeedbackTrial activeQuestionIdx={replayRecord[currentCheck].activeQidx} userAnswer={replayRecord[currentCheck].ans} correctAnswer={replayRecord[currentCheck].correctAns} />
+        <FeedbackTrial activeQuestionIdx={replayRecord[currentCheck].activeQidx as number} userAnswer={replayRecord[currentCheck].ans as string} correctAnswer={replayRecord[currentCheck].correctAns} />
       </Modal>
 
     </>

@@ -36,7 +36,7 @@ export default function Dynamic({ answers }: JumpFunctionParameters<never>): Jum
       qidx: qid.length,
       score,
     },
-    correctAnswer: [{ id: taskid, answer: correctOption }],
+    correctAnswer: [{ id: taskid, answer: String.fromCharCode(65 + correctOption) }],
   };
 }
 
