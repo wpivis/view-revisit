@@ -49,7 +49,7 @@
           "prompt": "You select: ",
           "location": "belowStimulus",
           "type": "reactive",
-          "hidden": true
+          "hidden": false
         }
       ],
       "correctAnswer": [
@@ -58,7 +58,7 @@
           "answer": "A"
         }
       ],
-      "provideFeedback": false,
+      "provideFeedback": true,
       "allowFailedTraining": true,
       "trainingAttempts": 1
     },

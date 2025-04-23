@@ -5,8 +5,8 @@ import { VLATQuestions } from './vlatQ';
 
 interface FeedbackTrialProps {
   activeQuestionIdx: number;
-  userAnswer: number;
-  correctAnswer: number;
+  userAnswer: string;
+  correctAnswer: string;
 }
 export default function FeedbackTrial({
   activeQuestionIdx,
@@ -65,7 +65,7 @@ export default function FeedbackTrial({
         <Title order={3}>
           The correct answer is
           {' '}
-          {String.fromCharCode(65 + correctAnswer)}
+          {correctAnswer}
         </Title>
       </Center>
     </Box>

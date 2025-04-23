@@ -9,11 +9,10 @@ export default function VlatTrial({ parameters, setAnswer, answers }: StimulusPa
   // console.log(answers);
   const taskid = 'vlatResp';
   const userAnswer = answers[`dynamicBlock_1_VlatTrial_${parameters.qidx}`].answer[taskid];
-  const [currentanswer, setCurrentAnswer] = useState<number>(userAnswer ? +userAnswer : -1);
+  const [currentanswer, setCurrentAnswer] = useState<string>(userAnswer ? userAnswer as string : '');
   const activeQuestion = VLATQuestions.filter((q) => q.originID === parameters.activeQuestionIdx)[0];
   const images = import.meta.glob('../assets/vlatImg/*.png', { eager: true });
   const imgMap: Record<string, string> = {};
-
   useEffect(() => {
     setAnswer({
       status: true,
@@ -56,10 +55,10 @@ export default function VlatTrial({ parameters, setAnswer, answers }: StimulusPa
                     activeQuestion.options.map((op:string, idx:number) => (
                       <Radio
                         disabled={userAnswer !== undefined}
-                        value={`${idx}`}
+                        value={`${String.fromCharCode(65 + idx)}`}
                         label={`${String.fromCharCode(65 + idx)}. ${op}`}
                         key={`op${idx}`}
-                        onClick={() => setCurrentAnswer(idx)}
+                        onClick={() => setCurrentAnswer(String.fromCharCode(65 + idx))}
                       />
                     ))
                   }
