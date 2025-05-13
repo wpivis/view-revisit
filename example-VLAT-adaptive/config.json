@@ -24,7 +24,6 @@
     "studyEndMsg": "Thank you for completing the study. You may close this window",
     "urlParticipantIdParam": "PROLIFIC_ID"
   },
-  "importedLibraries": ["demographics"],
   "components": {
     "introduction": {
       "type": "markdown",
@@ -46,7 +45,7 @@
       "response": [
         {
           "id": "vlatResp",
-          "prompt": "You select: ",
+          "prompt": "Your selection is:  ",
           "location": "belowStimulus",
           "type": "reactive",
           "hidden": false
@@ -80,8 +79,7 @@
         "order": "dynamic",
         "functionPath": "example-VLAT-adaptive/assets/Dynamic.tsx"
       },
-      "feedback",
-      "$demographics.co.demographics"
+      "feedback"
     ]
   }
 }
