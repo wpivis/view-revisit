@@ -1,8 +1,8 @@
 import {
-  Group, Text, Title, Center, Card, ColorSwatch, Modal,
+  Group, Text, Title, Grid, Card, ColorSwatch, Box,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import React, { useState } from 'react';
+import { IconEyeglass2 } from '@tabler/icons-react';
 import { StimulusParams } from '../../../store/types';
 import FeedbackTrial from './FeedbackTrial';
 
@@ -13,7 +13,7 @@ export default function Feedback({ answers }: StimulusParams<any>) {
   const topAnswer = Object.entries(answers)
     .filter(([key, _]) => key.startsWith('dynamicBlock'))
     .filter(([_, value]) => value.endTime > -1);
-  const [opened, { open, close }] = useDisclosure(false);
+  // const [opened, { open, close }] = useDisclosure(false);
   const [currentCheck, setCurrentCheck] = useState<number>(0);
 
   const score = +topAnswer[topAnswer.length - 1][1].answer.score;
@@ -26,7 +26,6 @@ export default function Feedback({ answers }: StimulusParams<any>) {
   // });
   const openTrialCheck = (idx: number) => {
     setCurrentCheck(idx);
-    open();
   };
 
   const replayRecord = topAnswer.map((item) => {
@@ -46,16 +45,14 @@ export default function Feedback({ answers }: StimulusParams<any>) {
   // console.log(topAnswer, 'topAnswer');
 
   return (
-    <>
-      <Center>
-        <Title>
+    <Grid>
+      <Grid.Col span={{ base: 12, md: 12, lg: 4 }}>
+        <Title order={2} ml={15}>
           Your score is
           {' '}
           {+score.toFixed(2)}
         </Title>
-      </Center>
-      <Center>
-        <Card w={600}>
+        <Card>
           <Title order={4} mb={20}>
             You got
             {' '}
@@ -69,16 +66,18 @@ export default function Feedback({ answers }: StimulusParams<any>) {
           </Title>
           <Group>
             {replayRecord.map((record, idx) => (
-              <ColorSwatch style={{ cursor: 'pointer' }} key={`circle${idx}`} color={record.correct ? 'green' : 'red'} onClick={() => openTrialCheck(idx)} />
+              <ColorSwatch style={{ cursor: 'pointer' }} key={`circle${idx}`} color={record.correct ? 'green' : 'red'} onClick={() => openTrialCheck(idx)}>
+                {idx === currentCheck && <IconEyeglass2 size={12} />}
+              </ColorSwatch>
             ))}
           </Group>
           <Text mt={20} size="sm" c="grey">*This score is based on an adaptive testing methodology and cannot be mapped to 0-1 or 0-100. Instead, it can be used to compare runs between yourself or with other peoples’ scores.</Text>
         </Card>
-      </Center>
-      <Modal opened={opened} onClose={close} size="auto" title="">
-        <FeedbackTrial activeQuestionIdx={replayRecord[currentCheck].activeQidx as number} userAnswer={replayRecord[currentCheck].ans as string} correctAnswer={replayRecord[currentCheck].correctAns} />
-      </Modal>
+      </Grid.Col>
 
-    </>
+      <Grid.Col span={{ base: 12, md: 12, lg: 8 }}>
+        <Box w={1000}><FeedbackTrial activeQuestionIdx={replayRecord[currentCheck].activeQidx as number} userAnswer={replayRecord[currentCheck].ans as string} correctAnswer={replayRecord[currentCheck].correctAns} /></Box>
+      </Grid.Col>
+    </Grid>
   );
 }

@@ -62,11 +62,36 @@ export default function FeedbackTrial({
 
       </Grid>
       <Center>
-        <Title order={3}>
-          The correct answer is
-          {' '}
-          {correctAnswer}
-        </Title>
+        {correctAnswer === userAnswer
+          ? (
+            <Title order={3} c="green.5">
+              Your answer is:
+              {' '}
+              {' '}
+              {' '}
+              {userAnswer}
+              <br />
+
+              {' '}
+              {' '}
+              Great job!
+            </Title>
+          )
+          : (
+            <Title order={3} c="red.5">
+              Your answer is:
+              {' '}
+              {' '}
+              {' '}
+              {userAnswer}
+              <br />
+              The correct answer is:
+              {' '}
+              {' '}
+              {correctAnswer}
+            </Title>
+          )}
+
       </Center>
     </Box>
   );
