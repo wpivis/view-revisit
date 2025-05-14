@@ -28,16 +28,7 @@
     "introduction": {
       "type": "markdown",
       "path": "example-VLAT-adaptive/assets/introduction.md",
-      "response": [
-        {
-          "id": "prolificId",
-          "prompt": "Please enter your prolificId",
-          "location": "belowStimulus",
-          "type": "shortText",
-          "placeholder": "id",
-          "paramCapture": "PROLIFIC_ID"
-        }
-      ]
+      "response": []
     },
     "VlatTrial": {
       "type": "react-component",

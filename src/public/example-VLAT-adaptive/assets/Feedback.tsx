@@ -1,5 +1,5 @@
 import {
-  Group, Text, Title, Grid, Card, ColorSwatch, Box,
+  Group, Text, Title, Grid, Card, ColorSwatch, Box, Center,
 } from '@mantine/core';
 import React, { useState } from 'react';
 import { IconEyeglass2 } from '@tabler/icons-react';
@@ -45,25 +45,32 @@ export default function Feedback({ answers }: StimulusParams<any>) {
   // console.log(topAnswer, 'topAnswer');
 
   return (
-    <Grid>
+    <Grid maw={1800}>
       <Grid.Col span={{ base: 12, md: 12, lg: 4 }}>
-        <Title order={2} ml={15}>
-          Your score is
-          {' '}
-          {+score.toFixed(2)}
+        <Title order={2} ml={-50}>
+          <Center>
+            Your score is
+            {' '}
+            {+score.toFixed(2)}
+          </Center>
+
         </Title>
         <Card>
-          <Title order={4} mb={20}>
-            You got
-            {' '}
-            {correctNum}
-            {' '}
-            correct out of
-            {' '}
-            {topAnswer.length}
-            {' '}
-            questions. Here is your record (Click each circle to check the question):
-          </Title>
+          <Center>
+            <Title order={4} mb={20}>
+              You got
+              {' '}
+              {correctNum}
+              {' '}
+              correct out of
+              {' '}
+              {topAnswer.length}
+              {' '}
+              questions.
+              <br />
+              <Text c="grey">(Click each circle to check the question and your answer)</Text>
+            </Title>
+          </Center>
           <Group>
             {replayRecord.map((record, idx) => (
               <ColorSwatch style={{ cursor: 'pointer' }} key={`circle${idx}`} color={record.correct ? 'green' : 'red'} onClick={() => openTrialCheck(idx)}>
@@ -71,7 +78,10 @@ export default function Feedback({ answers }: StimulusParams<any>) {
               </ColorSwatch>
             ))}
           </Group>
-          <Text mt={20} size="sm" c="grey">*This score is based on an adaptive testing methodology and cannot be mapped to 0-1 or 0-100. Instead, it can be used to compare runs between yourself or with other peoples’ scores.</Text>
+          <Center>
+            <Text w="80%" mt={20} size="sm" c="grey">*This score is based on an adaptive testing methodology and cannot be mapped to 0-1 or 0-100. Instead, it can be used to compare runs between yourself or with other peoples’ scores.</Text>
+
+          </Center>
         </Card>
       </Grid.Col>
 
