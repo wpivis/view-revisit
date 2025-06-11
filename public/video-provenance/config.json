@@ -1,0 +1,80 @@
+{
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/StudyConfigSchema.json",
+  "studyMetadata": {
+    "title": "Dynamic React.js Stimuli: A Graphical Perception Experiment",
+    "version": "pilot",
+    "authors": [
+      "The reVISit Team"
+    ],
+    "date": "2023-04-28",
+    "description": "A demo using dynamic React components as stimuli to replicate a Heer/Bostock perception study (doi:10.1145/1753326.1753357) that extends Cleveland & McGill graphical perception task (doi:10.1080/01621459.1984.10478080), with a consent form, brief training, a post study survey. Data is collected via form elements in validated fields.",
+    "organizations": [
+      "University of Utah",
+      "WPI",
+      "University of Toronto"
+    ]
+  },
+  "uiConfig": {
+    "contactEmail": "contact@revisit.dev",
+    "helpTextPath": "example-cleveland/assets/help.md",
+    "logoPath": "revisitAssets/revisitLogoSquare.svg",
+    "withProgressBar": true,
+    "autoDownloadStudy": false,
+    "sidebar": true
+  },
+  "baseComponents": {
+  },
+  "components": {
+    "introduction": {
+      "type": "markdown",
+      "path": "example-cleveland/assets/introduction.md",
+      "response": []
+    },
+    "consent": {
+      "type": "markdown",
+      "path": "example-cleveland/assets/consent-cm.md",
+      "nextButtonText": "Agree",
+      "response": [
+        {
+          "id": "signature",
+          "prompt": "Your signature",
+          "location": "belowStimulus",
+          "type": "shortText",
+          "placeholder": "Please provide your signature"
+        },
+        {
+          "id": "accept",
+          "prompt": "Do you consent to the study and wish to continue?",
+          "requiredValue": "Accept",
+          "location": "belowStimulus",
+          "type": "radio",
+          "options": [
+            "Decline",
+            "Accept"
+          ]
+        }
+      ]
+    },
+    "video-provenance": {
+      "type": "react-component",
+      "path": "video-provenance/assets/VideoProvenance.tsx",
+      "response": [
+        {
+          "id": "whatWasCaught",
+          "prompt": "What did the guy catch?",
+          "location": "belowStimulus",
+          "type": "shortText",
+          "placeholder": "Please provide your answer"
+        }
+      ]
+    }
+  },
+  "sequence": {
+    "order": "fixed",
+    "components": [
+      "introduction",
+      "consent",
+      "video-provenance"
+    ]
+  }
+}
