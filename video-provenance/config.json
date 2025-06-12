@@ -20,13 +20,18 @@
     "logoPath": "revisitAssets/revisitLogoSquare.svg",
     "withProgressBar": true,
     "autoDownloadStudy": false,
-    "sidebar": true
+    "sidebar": true,
+    "recordStudyAudio": true
   },
+  "importedLibraries": [
+    "mic-check"
+  ],
   "baseComponents": {
   },
   "components": {
     "introduction": {
       "type": "markdown",
+      "recordAudio": false,
       "path": "example-cleveland/assets/introduction.md",
       "response": []
     },
@@ -34,6 +39,7 @@
       "type": "markdown",
       "path": "example-cleveland/assets/consent-cm.md",
       "nextButtonText": "Agree",
+      "recordAudio": false,
       "response": [
         {
           "id": "signature",
@@ -75,6 +81,7 @@
     "components": [
       "introduction",
       "consent",
+      "$mic-check.co.audioTest",
       "video-provenance"
     ]
   }
