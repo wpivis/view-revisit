@@ -143,6 +143,82 @@
         }
       ]
     },
+    "trust": {
+      "type": "questionnaire",
+      "instruction": "**Trust in AI assessment:** \n\nFinally, we'd like to ask a few questions about your general attitude toward artificial intelligence (AI) technologies.\n\nThese questions are **not specific** to the summarization system you’ve seen, but refer to **AI systems in general**, such as those used in automation, decision support, healthcare, finance, or other domains. \n\n **Please indicate how much you agree or disagree with the following statements about AI.**",
+      "response": [
+        {
+          "id": "q-likert1",
+          "prompt": "I trust AI systems to make reasonable decisions.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        },
+        {
+          "id": "q-likert2",
+          "prompt": "I believe AI technologies are generally reliable.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        },
+        {
+          "id": "q-likert3",
+          "prompt": "I am comfortable relying on AI in important situations.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        },
+        {
+          "id": "q-likert4",
+          "prompt": "AI systems are capable of making complex judgments.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        },
+        {
+          "id": "q-likert5",
+          "prompt": "I worry that AI systems can make harmful mistakes.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        },
+        {
+          "id": "q-likert6",
+          "prompt": "I feel confident in using AI systems across different domains.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        },
+        {
+          "id": "q-likert7",
+          "prompt": "I would prefer to double-check AI decisions before acting.",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Strongly agree",
+          "leftLabel": "Strongly disagree",
+          "withDivider": true
+        }
+      ]
+    },
     "thank-you": {
       "type": "markdown",
       "path": "scads-llm-uncertainty/assets/thank-you.md",
@@ -161,6 +237,7 @@
       "50-accuracy-uncertainty-language",
       "50-accuracy-w-bolded-inaccuracies",
       "final-question",
+      "trust",
       "thank-you"
     ]
   }
