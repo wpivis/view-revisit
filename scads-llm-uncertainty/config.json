@@ -3,14 +3,10 @@
   "studyMetadata": {
     "title": "LLM Uncertainty",
     "version": "1.0.0",
-    "authors": [
-      "SCADS 2025"
-    ],
+    "authors": ["SCADS 2025"],
     "date": "2025-01-20",
     "description": "LLM Uncertainty",
-    "organizations": [
-      "LAS"
-    ]
+    "organizations": ["LAS"]
   },
   "uiConfig": {
     "contactEmail": "",
@@ -23,12 +19,26 @@
       "type": "markdown",
       "path": "scads-llm-uncertainty/assets/introduction.md",
       "response": []
+    },
+    "formal-accurate": {
+      "type": "image",
+      "path": "scads-llm-uncertainty/assets/images/T1_Formal_and_Accurate.png",
+      "response": [
+        {
+          "id": "q-likert",
+          "prompt": "On a scale from 1 (Not at all trustworthy) to 7 (Completely trustworthy), how much do you trust the information in the summary you just read?",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Not at all trustworthy",
+          "leftLabel": "Completely trustworthy",
+          "withDivider": true
+        }
+      ]
     }
   },
   "sequence": {
     "order": "fixed",
-    "components": [
-      "introduction"
-    ]
+    "components": ["introduction", "formal-accurate"]
   }
 }
