@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/GlobalConfigSchema.json",
   "configsList": [
+    "scads-llm-uncertainty",
     "video-provenance",
     "opacity-study",
     "tutorial",
@@ -40,6 +41,9 @@
     "test-step-logic"
   ],
   "configs": {
+    "scads-llm-uncertainty": {
+      "path": "scads-llm-uncertainty/config.json"
+    },
     "video-provenance": {
       "path": "video-provenance/config.json"
     },
