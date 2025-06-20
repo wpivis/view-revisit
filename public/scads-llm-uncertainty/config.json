@@ -35,10 +35,90 @@
           "withDivider": true
         }
       ]
+    },
+    "informal-accurate": {
+      "type": "image",
+      "path": "scads-llm-uncertainty/assets/images/T2_Informal_and_Accurate.png",
+      "response": [
+        {
+          "id": "q-likert",
+          "prompt": "On a scale from 1 (Not at all trustworthy) to 7 (Completely trustworthy), how much do you trust the information in the summary you just read?",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Not at all trustworthy",
+          "leftLabel": "Completely trustworthy",
+          "withDivider": true
+        }
+      ]
+    },
+    "80-accuracy-uncertainty-language": {
+      "type": "image",
+      "path": "scads-llm-uncertainty/assets/images/T3_80_Accuracy_Uncertainty_Language.png",
+      "response": [
+        {
+          "id": "q-likert",
+          "prompt": "On a scale from 1 (Not at all trustworthy) to 7 (Completely trustworthy), how much do you trust the information in the summary you just read?",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Not at all trustworthy",
+          "leftLabel": "Completely trustworthy",
+          "withDivider": true
+        }
+      ]
+    },
+    "80-accuracy-w-bolded-inaccuracies": {
+      "type": "image",
+      "path": "scads-llm-uncertainty/assets/images/T4_80_Accuracy_w_Bolded_Inaccuracies.png",
+      "response": [
+        {
+          "id": "q-likert",
+          "prompt": "On a scale from 1 (Not at all trustworthy) to 7 (Completely trustworthy), how much do you trust the information in the summary you just read?",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Not at all trustworthy",
+          "leftLabel": "Completely trustworthy",
+          "withDivider": true
+        }
+      ]
+    },
+    "50-accuracy-uncertainty-language": {
+      "type": "image",
+      "path": "scads-llm-uncertainty/assets/images/T5_50_Accuracy_Uncertainty_Language.png",
+      "response": [
+        {
+          "id": "q-likert",
+          "prompt": "On a scale from 1 (Not at all trustworthy) to 7 (Completely trustworthy), how much do you trust the information in the summary you just read?",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Not at all trustworthy",
+          "leftLabel": "Completely trustworthy",
+          "withDivider": true
+        }
+      ]
+    },
+    "50-accuracy-w-bolded-inaccuracies": {
+      "type": "image",
+      "path": "scads-llm-uncertainty/assets/images/T6_50_Accuracy_w_Bolded_Inaccuracies.png",
+      "response": [
+        {
+          "id": "q-likert",
+          "prompt": "On a scale from 1 (Not at all trustworthy) to 7 (Completely trustworthy), how much do you trust the information in the summary you just read?",
+          "location": "belowStimulus",
+          "type": "likert",
+          "numItems": 7,
+          "rightLabel": "Not at all trustworthy",
+          "leftLabel": "Completely trustworthy",
+          "withDivider": true
+        }
+      ]
     }
   },
   "sequence": {
     "order": "fixed",
-    "components": ["introduction", "formal-accurate"]
+    "components": ["introduction", "formal-accurate", "informal-accurate", "80-accuracy-uncertainty-language", "80-accuracy-w-bolded-inaccuracies", "50-accuracy-uncertainty-language", "50-accuracy-w-bolded-inaccuracies"]
   }
 }
