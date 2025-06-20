@@ -12,12 +12,17 @@
     "contactEmail": "",
     "logoPath": "revisitAssets/revisitLogoSquare.svg",
     "withProgressBar": true,
+    "recordStudyAudio": true,
     "sidebar": true
   },
+  "importedLibraries": [
+    "mic-check"
+  ],
   "components": {
     "introduction": {
       "type": "markdown",
       "path": "scads-llm-uncertainty/assets/introduction.md",
+      "recordAudio": false,
       "response": []
     },
     "task": {
@@ -229,6 +234,7 @@
     "order": "fixed",
     "components": [
       "introduction",
+      "$mic-check.co.audioTest",
       "task",
       "formal-accurate",
       "informal-accurate",
