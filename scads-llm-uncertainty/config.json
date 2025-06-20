@@ -20,6 +20,11 @@
       "path": "scads-llm-uncertainty/assets/introduction.md",
       "response": []
     },
+    "task": {
+      "type": "markdown",
+      "path": "scads-llm-uncertainty/assets/task.md",
+      "response": []
+    },
     "formal-accurate": {
       "type": "image",
       "path": "scads-llm-uncertainty/assets/images/T1_Formal_and_Accurate.png",
@@ -115,10 +120,48 @@
           "withDivider": true
         }
       ]
+    },
+    "final-question": {
+      "type": "markdown",
+      "path": "scads-llm-uncertainty/assets/final-question.md",
+      "instruction": "Now that you've read all the summaries, which one would you prefer to rely on for decision-making? (Select one)",
+      "nextButtonLocation": "sidebar",
+      "response": [
+        {
+          "id": "q-radio",
+          "prompt": "which one would you prefer to rely on for decision-making? (Select one)",
+          "location": "sidebar",
+          "type": "radio",
+          "options": [
+            "Summary A",
+            "Summary B",
+            "Summary C",
+            "Summary D",
+            "Summary E",
+            "Summary F"
+          ]
+        }
+      ]
+    },
+    "thank-you": {
+      "type": "markdown",
+      "path": "scads-llm-uncertainty/assets/thank-you.md",
+      "response": []
     }
   },
   "sequence": {
     "order": "fixed",
-    "components": ["introduction", "formal-accurate", "informal-accurate", "80-accuracy-uncertainty-language", "80-accuracy-w-bolded-inaccuracies", "50-accuracy-uncertainty-language", "50-accuracy-w-bolded-inaccuracies"]
+    "components": [
+      "introduction",
+      "task",
+      "formal-accurate",
+      "informal-accurate",
+      "80-accuracy-uncertainty-language",
+      "80-accuracy-w-bolded-inaccuracies",
+      "50-accuracy-uncertainty-language",
+      "50-accuracy-w-bolded-inaccuracies",
+      "final-question",
+      "thank-you"
+    ]
   }
 }
