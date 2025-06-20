@@ -21,35 +21,32 @@ export function AudioTest({ setAnswer }: StimulusParams<undefined>) {
       const audioStreamSource = audioContext.createMediaStreamSource(stream);
       const analyser = audioContext.createAnalyser();
 
+      analyser.fftSize = 2048;
       analyser.minDecibels = -45;
       audioStreamSource.connect(analyser);
 
-      const bufferLength = analyser.frequencyBinCount;
-      const domainData = new Uint8Array(bufferLength);
-
       let soundDetected = false;
 
+      const timeDomainData = new Uint8Array(analyser.fftSize);
+
       const detectSound = () => {
-        if (soundDetected) {
-          return;
+        if (soundDetected) return;
+
+        analyser.getByteTimeDomainData(timeDomainData);
+
+        let sum = 0;
+        for (let i = 0; i < timeDomainData.length; i += 1) {
+          const val = timeDomainData[i] - 128;
+          sum += val * val;
+        }
+        const rms = Math.sqrt(sum / timeDomainData.length);
+
+        if (rms > 10) {
+          soundDetected = true;
+          setAnswer({ status: true, provenanceGraph: undefined, answers: { audioTest: true } });
         }
 
-        analyser.getByteFrequencyData(domainData);
-
-        for (let i = 0; i < bufferLength; i += 1) {
-          if (domainData[i] > 0) {
-            soundDetected = true;
-            setAnswer({
-              status: true,
-              provenanceGraph: undefined,
-              answers: {
-                audioTest: true,
-              },
-            });
-          }
-        }
-
-        window.requestAnimationFrame(detectSound);
+        requestAnimationFrame(detectSound);
       };
 
       window.requestAnimationFrame(detectSound);
