@@ -4,6 +4,7 @@
     "scads-llm-uncertainty",
     "video-provenance",
     "opacity-study",
+    "task-gamification",
     "tutorial",
     "example-brush-interactions",
     "example-cleveland",
@@ -49,6 +50,9 @@
     },
     "opacity-study": {
       "path": "opacity-study/config.json"
+    },
+    "task-gamification": {
+      "path": "task-gamification/config.json"
     },
     "tutorial": {
       "path": "tutorial/config.json"
