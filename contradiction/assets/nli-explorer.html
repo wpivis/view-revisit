@@ -124,7 +124,7 @@
       <button id="help-toggle">Help ▾</button>
     </div>
     <div id="help-panel" style="display:none;">
-      <p>Select a document on the "source" side and click "load" to reveal it. Then select a related document from the "target" side and click "load" to </p>
+      <p>Select a document on the "source" side and click "load" to display it. Then select a related document from the "target" side and click "load" to highlight related sentences between the two.</p>
       <p>Scroll or click a sentence in either column to reveal related sentences. Bold or colored highlighting indicate the presence of a relationship. 
         Colors indicate degree of <span class="swatch high">contradiction</span>, <span class="swatch low">Entailment</span> or <span class="swatch medium">neutrality</span>.
         Darker colors indicate a higher confidence in the relationship. More vibrant colors indicate a stronger contradiction/entailment.
@@ -1269,7 +1269,17 @@
     /* Build source dropdown */
     function fillSelect($sel, list) {
       $sel.empty().append('<option value="">Choose…</option>');
-      list.forEach(d => $sel.append(`<option value="${d.id}">${d.title}</option>`));
+      list.forEach(d => {
+        const option = `<option value="${d.id}" title="${d.title}">${d.title}</option>`;
+        $sel.append(option);
+      });
+
+      $sel.css({
+        'text-overflow': 'ellipsis',
+        'white-space': 'nowrap',
+        'overflow': 'hidden',
+        'width': '90%'  // Ensure it uses the full width of its container
+      });
     }
     fillSelect($srcSel, documents);
 
