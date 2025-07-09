@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NLI Explorer</title>
+  <style>
+    /* =======================
+      CONTRADICTION UI – Master Stylesheet
+      ======================= */
+
+    @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css");
+
+    /* ---- Global & Typography ---- */
+    html,body{height:100%;margin:0;font-family:system-ui,sans-serif;}
+
+    /* ---------- HEADER ---------- */
+    #page-header{background:linear-gradient(90deg,#4b5563,#9ca3af);color:#fff;box-shadow:0 2px 4px rgba(0,0,0,.12);padding:.75rem 1rem;position:relative;}
+    #page-header h1{margin:0;font-size:1.45rem;letter-spacing:-0.02em;}
+    #help-toggle{background:rgba(255,255,255,.15);border:none;color:#fff;padding:.35rem .65rem;border-radius:4px;font-size:.9rem;cursor:pointer;transition:background .2s;}
+    #help-toggle:hover{background:rgba(255,255,255,.25);}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    #help-panel{background:#f8f9fa;border-bottom:1px solid #e2e8f0;color:#333;padding:1rem;font-size:.9rem;line-height:1.5;display:none;}
+    #help-panel .swatch{margin-left:.25rem;}
+
+    /* ---------- LAYOUT ---------- */
+    #wrapper{display:flex;justify-content:center;gap:2rem;padding:0 3rem;height:calc(100vh - 120px);overflow:visible;position:relative;align-items:stretch;position:relative;align-items:stretch;}
+
+    #src,#tgt{
+      width:38%;
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:8px;
+      box-shadow:0 1px 3px rgba(0,0,0,.05);
+      overflow:visible;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      margin-top: 3rem;
+      padding-top:0.9rem;
+    }
+
+    /* ---------- COLUMN LABEL BADGES ---------- */
+    .column-label{
+      position:absolute;
+      top:-1.8rem;
+      left:-1px;
+      background:#e5e7eb;
+      color:#111827;
+      font-size:.875rem;
+      font-weight:700;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      padding:.25rem .9rem .3rem;
+      border-radius:6px 6px 0 0;
+      margin:0;
+      z-index:2;
+      box-shadow:0 1px 2px rgba(0,0,0,.08);
+    }
+
+    /* ---------- CONTENT AREA (scrollable) ---------- */
+    .content-area{
+      flex:1;
+      overflow-y:auto;
+      padding:1rem 1.5rem 1.5rem;
+    }
+
+    /* ---------- LOADER PANES ---------- */
+    .loader-pane{
+      background:#fafafa;
+      border:2px dashed #d1d5db;
+      border-radius:8px;
+      margin:1rem;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      color:#6b7280;
+      font-size:.9rem;
+      padding:1rem 0;
+    }
+    .loader-pane h3{margin:0 0 .5rem 0;font-size:1rem;color:#374151;}
+    .loader-pane select{margin:.25rem 0;padding:.25rem .5rem;border:1px solid #d1d5db;border-radius:4px;font-size:.85rem;}
+    .loader-pane button{margin-top:.5rem;background:#6b7280;color:#fff;border:none;padding:.3rem .75rem;border-radius:4px;font-size:.8rem;cursor:pointer;}
+    .loader-pane button:hover{background:#4b5563;}
+
+    /* ---------- ARTICLE TITLES ---------- */
+    .article-title{text-align:center;margin:0 0 1rem 0;font-size:1.1rem;color:#1f2937;}
+
+    /* ---------- SWAP BUTTON ---------- */
+    #swap-container{display:flex;align-items:center;justify-content:center;}
+    #swap-btn{
+      width:64px;height:64px;
+      display:flex;align-items:center;justify-content:center;
+      background:#4b5563;border:none;border-radius:50%;
+      color:#fff;font-size:2rem;cursor:pointer;box-shadow:0 3px 6px rgba(0,0,0,.25);
+      transition:transform .15s ease,background .2s;
+    }
+    #swap-btn:hover{background:#374151;transform:scale(1.05);}
+    #swap-btn i{pointer-events:none;}
+
+    /* ---------- SVG CONNECTOR OVERLAY ---------- */
+    #links{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
+
+    /* ---------- TEXT FLOW ---------- */
+    .paragraph{margin:0 0 1.25rem 0;text-align:justify;line-height:1.6;}
+    .sentence{display:inline;margin:0;padding:0 .2rem;border-radius:4px;transition:background-color .2s,outline .2s;}
+    .sentence.active{outline:2px solid #0ea5e9;}
+    .source-key{font-weight:600;}
+
+    /* ---------- CONTRADICTION HEAT MAP ---------- */
+    .low{background:#3ef93e;}
+    .medium{background:#dabea5;}
+    .high{background:#e92a2a;}
+
+  /* Connector line color handled in JS */
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+  <!-- ========= HEADER ========= -->
+  <header id="page-header">
+    <div class="header-inner">
+      <h1>Contradiction Explorer</h1>
+      <button id="help-toggle">Help ▾</button>
+    </div>
+    <div id="help-panel" style="display:none;">
+      <p>Select a document on the "source" side and click "load" to reveal it. Then select a related document from the "target" side and click "load" to </p>
+      <p>Scroll or click a sentence in either column to reveal related sentences. Bold or colored highlighting indicate the presence of a relationship. 
+        Colors indicate degree of <span class="swatch high">contradiction</span>, <span class="swatch low">Entailment</span> or <span class="swatch medium">neutrality</span>.
+        Darker colors indicate a higher confidence in the relationship. More vibrant colors indicate a stronger contradiction/entailment.
+      </p>
+      <p><strong>Tips:</strong> Click a highlighted sentence to highlight it's relationships. A blue outline marks the focused sentence. Multiple connectors show one‑to‑many links.</p>
+    </div>
+  </header>
+
+  <div id="wrapper">
+    <!-- ========= SOURCE COLUMN ========= -->
+    <div id="src">
+      <h2 class="column-label">Source Document</h2>
+      <div class="loader-pane">
+        <h3>Select Source</h3>
+        <select id="source-selector"></select>
+        <button id="load-source" disabled>Load</button>
+      </div>
+      <div class="content-area"></div>
+    </div>
+
+    <!-- ========= SWAP BUTTON ========= -->
+    <div id="swap-container"><button id="swap-btn" title="Swap documents"><i class="fa fa-exchange"></i></button></div>
+
+    <!-- ========= TARGET COLUMN ========= -->
+    <div id="tgt">
+      <h2 class="column-label">Target Document</h2>
+      <div class="loader-pane">
+        <h3>Select Target</h3>
+        <select id="target-selector" disabled></select>
+        <button id="load-target" disabled>Load</button>
+      </div>
+      <div class="content-area"></div>
+    </div>
+
+    <!-- Connector overlay -->
+    <svg id="links"></svg>
+  </div>
+
+  <!-- ========= FOOTER ========= -->
+  <footer style="text-align:center;font-size:.8rem;color:#6b7280;margin:0.5rem 0 1rem;">
+    Built with <strong>OpenAI o3</strong> model
+  </footer>
+
+  <!-- ========= DATA INJECTION ========= -->
+  <div id="doc-data" style="display:none">
+{
+    "documents": [
+        {
+            "id": "d488ca4450744508be39abad163b1536",
+            "title": "Campus Police Review Evidence: Wuf's motive is unclear",
+            "paragraphs": [
+                [
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-0",
+                        "text": "As the investigation into the Granny's disappearance and encounter with Mr.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-4": "#8a34003b",
+                            "4e473195591a4b5f8b3699fa5794833d-5": "#bb2a0060",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#ca210066",
+                            "72126b9e19ca455da6e82025706baae4-0": "#e4230087",
+                            "72126b9e19ca455da6e82025706baae4-1": "#8735003b",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#4a500027"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-1",
+                        "text": " Wuf continues, campus police are reviewing evidence to determine whether the wolf was truly malicious.",
+                        "targets": {
+                            "9141fa23639d4441bc8e495171f96c89-1": "#4859002c",
+                            "9141fa23639d4441bc8e495171f96c89-7": "#7a42003a"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-2",
+                        "text": " \n\n\"We arrived for dinner at 6:00 o'clock,\" said Ms.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-0": "#902e003c",
+                            "a4178b0b3a9641498faaf59ee4951970-0": "#883c0041"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-3",
+                        "text": " Riding Hood, granddaughter of the victim, \"but Granny wasn't there.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-4": "#af290055",
+                            "4e473195591a4b5f8b3699fa5794833d-5": "#c826006b",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#ad25004f",
+                            "72126b9e19ca455da6e82025706baae4-0": "#b0290057",
+                            "72126b9e19ca455da6e82025706baae4-1": "#952e0041",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#504d0029"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-4",
+                        "text": "\" According the aggrieved girl, Mr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-5",
+                        "text": " Wuf was the only one inside the house, allegedly dropping off last minute groceries for the party.",
+                        "targets": {
+                            "889c56ef68204cf6a890d45f021b21e2-5": "#7d4c0048",
+                            "9141fa23639d4441bc8e495171f96c89-3": "#9f430062",
+                            "9141fa23639d4441bc8e495171f96c89-5": "#db2d008b"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-6",
+                        "text": "\"\n\nMr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-7",
+                        "text": " Wuf declined to comment.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-8",
+                        "text": " \n\n\"We're looking at all aspects of the incident,\" said Captain James Parker of NC State University Police in an interview with this reporter.",
+                        "targets": {
+                            "3660c4a344ef4db7a18b50e680437078-1": "#88430048",
+                            "cf180f8801fa41958ecf3c3e7af76519-1": "#2d98005a"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-9",
+                        "text": " \"It's possible that there were miscommunications or misunderstandings.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-2": "#8f4c0056",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-5": "#8b660074",
+                            "740071079b3a4bd8a53e811fe6e12d45-1": "#953c004e",
+                            "1f1c9517b13743d0a65f306ca5db80bb-40": "#774a003e"
+                        }
+                    },
+                    {
+                        "id": "d488ca4450744508be39abad163b1536-10",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "4e473195591a4b5f8b3699fa5794833d",
+            "title": "Granny's Reputation Damaged: Community Rallies Around Despite Fan Turnout",
+            "paragraphs": [
+                [
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-0",
+                        "text": "The community has rallied around Granny following her secret dinner party plans were exposed earlier today.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-2": "#91340042",
+                            "a4178b0b3a9641498faaf59ee4951970-0": "#46550028"
+                        }
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-1",
+                        "text": " Local paparazzi and a range of fans lined the streets near Jordan Hall in an attempt to get access.",
+                        "targets": {
+                            "1f1c9517b13743d0a65f306ca5db80bb-28": "#6d3a002c",
+                            "1f1c9517b13743d0a65f306ca5db80bb-30": "#7a360031",
+                            "1f1c9517b13743d0a65f306ca5db80bb-31": "#db2a0085",
+                            "1f1c9517b13743d0a65f306ca5db80bb-35": "#60400029",
+                            "1f1c9517b13743d0a65f306ca5db80bb-38": "#93420052"
+                        }
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-2",
+                        "text": "\n\n\"I've never seen so many strange people,\" said Papa Razzi, \"I even thought I saw a few mascots from other schools.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-9": "#3563002a",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-5": "#9546005a",
+                            "740071079b3a4bd8a53e811fe6e12d45-1": "#6b5d0049",
+                            "1f1c9517b13743d0a65f306ca5db80bb-40": "#714e003e"
+                        }
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-3",
+                        "text": " I'm hoping to get a shot of the NBA guests coming from Minnesota.",
+                        "targets": {
+                            "40e49c07b36d4054988014349813f54b-2": "#5c430029",
+                            "40e49c07b36d4054988014349813f54b-3": "#e6280090",
+                            "40e49c07b36d4054988014349813f54b-5": "#94310043",
+                            "40e49c07b36d4054988014349813f54b-6": "#93320042",
+                            "40e49c07b36d4054988014349813f54b-8": "#5f410029",
+                            "40e49c07b36d4054988014349813f54b-9": "#81310033",
+                            "40e49c07b36d4054988014349813f54b-10": "#6242002a",
+                            "40e49c07b36d4054988014349813f54b-11": "#9c31004a",
+                            "40e49c07b36d4054988014349813f54b-12": "#98300046"
+                        }
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-4",
+                        "text": " Granny lived there before moving to Raleigh and used to date Crunch, their mascot.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-0": "#993e0053",
+                            "d488ca4450744508be39abad163b1536-3": "#f13100ac",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#6b3b002c",
+                            "72126b9e19ca455da6e82025706baae4-0": "#e0240083",
+                            "72126b9e19ca455da6e82025706baae4-1": "#7438002e",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#5f420029"
+                        }
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-5",
+                        "text": "\"\n\n\"She's a dear friend and neighbor,\" said one resident in an interview with this reporter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-0": "#ac300058",
+                            "d488ca4450744508be39abad163b1536-3": "#dc2b0087",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#5f4a002d",
+                            "72126b9e19ca455da6e82025706baae4-0": "#ab300058",
+                            "72126b9e19ca455da6e82025706baae4-1": "#9d370051",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#8934003b"
+                        }
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-6",
+                        "text": " \"We stand by her and support her privacy.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "4e473195591a4b5f8b3699fa5794833d-7",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "889c56ef68204cf6a890d45f021b21e2",
+            "title": "Ms Wuf Speaks Out: \"Bring my Wuf Home\"",
+            "paragraphs": [
+                [
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-0",
+                        "text": "In an exclusive interview, Ms.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-1",
+                        "text": " Wuf spoke out in support of Mr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-2",
+                        "text": " Wuf.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-3",
+                        "text": " \n\n\"There are other wolves around, these days.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-4",
+                        "text": " Granny was open-hearted and very trusting.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-5",
+                        "text": " I don't know who could have done something so terrible, but it wasn't my Wufie.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-5": "#81350035",
+                            "9141fa23639d4441bc8e495171f96c89-3": "#92440053",
+                            "9141fa23639d4441bc8e495171f96c89-5": "#ac34005e"
+                        }
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-6",
+                        "text": "\"\n\nA rally to free Mr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "889c56ef68204cf6a890d45f021b21e2-7",
+                        "text": " Wuf, organized by Little Red Riding Hood, is planned for 3:00pm at Hunt Library tomorrow.",
+                        "targets": {
+                            "a4178b0b3a9641498faaf59ee4951970-3": "#7a360031"
+                        }
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "04a7a54f36b54cea8b0c74f16567e1f0",
+            "title": "Forest Dweller Sighting Confirmed: Campus Police Warn of Increased Vigilance",
+            "paragraphs": [
+                [
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-0",
+                        "text": "Raleigh, NC - 01/08/2000 type: news class: Content author: Hapster N.",
+                        "targets": {
+                            "3660c4a344ef4db7a18b50e680437078-2": "#5a440029",
+                            "cf180f8801fa41958ecf3c3e7af76519-2": "#46510027",
+                            "1f1c9517b13743d0a65f306ca5db80bb-42": "#8931003a",
+                            "f631957d88c847dcbad2fd8002e3a986-4": "#85360039"
+                        }
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-1",
+                        "text": " Wheel source: New News Today Daily url: https://www.",
+                        "targets": {
+                            "3660c4a344ef4db7a18b50e680437078-2": "#6f400032",
+                            "cf180f8801fa41958ecf3c3e7af76519-2": "#42580029",
+                            "1f1c9517b13743d0a65f306ca5db80bb-42": "#8d370041",
+                            "f631957d88c847dcbad2fd8002e3a986-4": "#8040003e"
+                        }
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-2",
+                        "text": "rockfishresearch.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-3",
+                        "text": "com/opentldr/sample_data/news9.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-4",
+                        "text": "html\n\nCampus police have confirmed that a forest dweller was spotted lurking around Jordan Hall and the Hunt Library building earlier today.",
+                        "targets": {
+                            "3660c4a344ef4db7a18b50e680437078-0": "#25b60079",
+                            "cf180f8801fa41958ecf3c3e7af76519-0": "#3562002a"
+                        }
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-5",
+                        "text": " Reports claim that the character was holding a basketball.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-9": "#288e004b",
+                            "4e473195591a4b5f8b3699fa5794833d-2": "#b34e0084",
+                            "740071079b3a4bd8a53e811fe6e12d45-1": "#78400038",
+                            "1f1c9517b13743d0a65f306ca5db80bb-40": "#6d630052"
+                        }
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-6",
+                        "text": "\n\n\"We urge all students to exercise increased vigilance when walking alone,\" said Captain James Parker of NC State University Police in an interview with this reporter.",
+                        "targets": {
+                            "1f1c9517b13743d0a65f306ca5db80bb-22": "#a8330059",
+                            "1f1c9517b13743d0a65f306ca5db80bb-24": "#6340002a",
+                            "1f1c9517b13743d0a65f306ca5db80bb-25": "#a43c005f",
+                            "1f1c9517b13743d0a65f306ca5db80bb-26": "#683c002b",
+                            "1f1c9517b13743d0a65f306ca5db80bb-29": "#90360044"
+                        }
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-7",
+                        "text": " \"We will do everything in our power to keep you safe.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "04a7a54f36b54cea8b0c74f16567e1f0-8",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "a4178b0b3a9641498faaf59ee4951970",
+            "title": "Granny Reveals Secret Plans for Jordan Hall",
+            "paragraphs": [
+                [
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-0",
+                        "text": "In a shocking revelation, Granny has confirmed that she was secretly planning to host an underground dinner party at Jordan Hall earlier today.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-2": "#90380045",
+                            "4e473195591a4b5f8b3699fa5794833d-0": "#8a37003e"
+                        }
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-1",
+                        "text": " Among other celebrities, Mr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-2",
+                        "text": " And Ms.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-3",
+                        "text": " Wuf were confirmed guests, according to multiple sources.",
+                        "targets": {
+                            "889c56ef68204cf6a890d45f021b21e2-7": "#a528004a"
+                        }
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-4",
+                        "text": "\n\n\"I just wanted to invite friends to the house for a bit,\" said Granny in an interview with a reporter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-0": "#d5260079",
+                            "d488ca4450744508be39abad163b1536-3": "#dd300091",
+                            "4e473195591a4b5f8b3699fa5794833d-4": "#96330045",
+                            "4e473195591a4b5f8b3699fa5794833d-5": "#6d5b0049",
+                            "72126b9e19ca455da6e82025706baae4-0": "#cc270070",
+                            "72126b9e19ca455da6e82025706baae4-1": "#60520035",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#8636003a"
+                        }
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-5",
+                        "text": " \"But these are private citizens.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-6",
+                        "text": " I hope we can eat and enjoy our evening in peace.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "a4178b0b3a9641498faaf59ee4951970-7",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "3660c4a344ef4db7a18b50e680437078",
+            "title": "Campus Police Investigate Suspicious Activity Near Hunt Library",
+            "paragraphs": [
+                [
+                    {
+                        "id": "3660c4a344ef4db7a18b50e680437078-0",
+                        "text": "A suspicious character was spotted lurking around the perimeter of the Hunt Library building earlier today, according to campus police.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-4": "#685c0045",
+                            "cf180f8801fa41958ecf3c3e7af76519-0": "#3a61002b"
+                        }
+                    },
+                    {
+                        "id": "3660c4a344ef4db7a18b50e680437078-1",
+                        "text": "\n\n\"We take all threats seriously,\" said Captain James Parker of NC State University Police in an interview with this reporter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-8": "#488d0063",
+                            "cf180f8801fa41958ecf3c3e7af76519-1": "#3fc000a4"
+                        }
+                    },
+                    {
+                        "id": "3660c4a344ef4db7a18b50e680437078-2",
+                        "text": " \"We are investigating the incident and will provide updates as more information becomes available.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-0": "#ab5b008e",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-1": "#b94d008c",
+                            "cf180f8801fa41958ecf3c3e7af76519-2": "#25e000b4",
+                            "1f1c9517b13743d0a65f306ca5db80bb-42": "#7f3b0039",
+                            "f631957d88c847dcbad2fd8002e3a986-4": "#8a3a0041"
+                        }
+                    },
+                    {
+                        "id": "3660c4a344ef4db7a18b50e680437078-3",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "72126b9e19ca455da6e82025706baae4",
+            "title": "Little Red Riding Hood Visits ailing Granny at Betsy Jordan Hall",
+            "paragraphs": [
+                [
+                    {
+                        "id": "72126b9e19ca455da6e82025706baae4-0",
+                        "text": "Little Red Riding Hood visited her ailing grandmother at Betsy Jordan Hall earlier today, according to sources close to the family.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-0": "#c92a006f",
+                            "d488ca4450744508be39abad163b1536-3": "#d138008d",
+                            "4e473195591a4b5f8b3699fa5794833d-4": "#83340035",
+                            "4e473195591a4b5f8b3699fa5794833d-5": "#5e47002b",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#723a002e",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#7a3c0036"
+                        }
+                    },
+                    {
+                        "id": "72126b9e19ca455da6e82025706baae4-1",
+                        "text": "\n\n\"I was feeling a bit under the weather,\" said Granny in an interview with this reporter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-0": "#9b33004b",
+                            "d488ca4450744508be39abad163b1536-3": "#df2f0093",
+                            "4e473195591a4b5f8b3699fa5794833d-4": "#8f33003e",
+                            "4e473195591a4b5f8b3699fa5794833d-5": "#8c4d0058",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#7239002d",
+                            "9141fa23639d4441bc8e495171f96c89-0": "#723b002f"
+                        }
+                    },
+                    {
+                        "id": "72126b9e19ca455da6e82025706baae4-2",
+                        "text": " \"But Little Red Riding Hood's visit really lifted my spirits.",
+                        "targets": {
+                            "740071079b3a4bd8a53e811fe6e12d45-0": "#dd200079",
+                            "cea95a6f5a6c4064919aa7ca71606f1e-0": "#af270053",
+                            "cea95a6f5a6c4064919aa7ca71606f1e-1": "#743c0031"
+                        }
+                    },
+                    {
+                        "id": "72126b9e19ca455da6e82025706baae4-3",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "cf180f8801fa41958ecf3c3e7af76519",
+            "title": "Granny's Disappearance: Campus Police Search Underway",
+            "paragraphs": [
+                [
+                    {
+                        "id": "cf180f8801fa41958ecf3c3e7af76519-0",
+                        "text": "Campus police have confirmed that a forest dweller was spotted lurking around the Hunt Library building on NC State's campus earlier today.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-4": "#5d630043",
+                            "3660c4a344ef4db7a18b50e680437078-0": "#24b30075"
+                        }
+                    },
+                    {
+                        "id": "cf180f8801fa41958ecf3c3e7af76519-1",
+                        "text": "\n\n\"We are taking this situation very seriously,\" said Captain James Parker of NC State University Police in an interview with this reporter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-8": "#338a004e",
+                            "3660c4a344ef4db7a18b50e680437078-1": "#4757002a"
+                        }
+                    },
+                    {
+                        "id": "cf180f8801fa41958ecf3c3e7af76519-2",
+                        "text": " \"We will provide updates as more information becomes available.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-0": "#ae5a0090",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-1": "#b64a0084",
+                            "3660c4a344ef4db7a18b50e680437078-2": "#385d0029",
+                            "1f1c9517b13743d0a65f306ca5db80bb-42": "#9b36004d",
+                            "f631957d88c847dcbad2fd8002e3a986-4": "#733d0031"
+                        }
+                    },
+                    {
+                        "id": "cf180f8801fa41958ecf3c3e7af76519-3",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "9141fa23639d4441bc8e495171f96c89",
+            "title": "New Evidence Emerges: Second Wolf Implicated",
+            "paragraphs": [
+                [
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-0",
+                        "text": "As the investigation into the disappearance of Granny continues, new evidence has emerged that appears to complicate the matter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-0": "#6a42002f",
+                            "d488ca4450744508be39abad163b1536-3": "#b247007b",
+                            "4e473195591a4b5f8b3699fa5794833d-4": "#79350030",
+                            "4e473195591a4b5f8b3699fa5794833d-5": "#ab320059",
+                            "a4178b0b3a9641498faaf59ee4951970-4": "#c7250064",
+                            "72126b9e19ca455da6e82025706baae4-0": "#dc24007e",
+                            "72126b9e19ca455da6e82025706baae4-1": "#96310043"
+                        }
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-1",
+                        "text": " Reports of another wolf on NC State campus have been circulating throughout the community.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-1": "#5f4a002d"
+                        }
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-2",
+                        "text": " \n\n\"I'm a friend of Mr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-3",
+                        "text": " Wuf, or Wufie, as I call him,\" said Michael O'Connell, member of the NC State basketball team, \"He wouldn't do anything to hurt Granny.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-5": "#a22d004c",
+                            "889c56ef68204cf6a890d45f021b21e2-5": "#95420055"
+                        }
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-4",
+                        "text": " Besides, I'm sure I saw another wolf on my way to class.",
+                        "targets": {
+                            "f631957d88c847dcbad2fd8002e3a986-8": "#cf2e007b"
+                        }
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-5",
+                        "text": " Wulfie would never wear blue, and this Wolf, whoever he is, looked like he was repping Duke.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-5": "#d1290077",
+                            "889c56ef68204cf6a890d45f021b21e2-5": "#725b004d"
+                        }
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-6",
+                        "text": " That's just not my Wuf.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "9141fa23639d4441bc8e495171f96c89-7",
+                        "text": "\"\n\nPolice Captain James Parker of NC State University confirmed that they would be reviewing local business and street camera footage for a second wolf that matches O'Connell's description.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-1": "#4a6d003f"
+                        }
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "740071079b3a4bd8a53e811fe6e12d45",
+            "title": "Little Red Riding Hood's Encounter with a Furry Forest Dweller",
+            "paragraphs": [
+                [
+                    {
+                        "id": "740071079b3a4bd8a53e811fe6e12d45-0",
+                        "text": "Little Red Riding Hood's encounter with a suspicious furry character earlier today was nothing short of terrifying, according to eyewitnesses.",
+                        "targets": {
+                            "72126b9e19ca455da6e82025706baae4-2": "#f42900a1",
+                            "cea95a6f5a6c4064919aa7ca71606f1e-0": "#653e002a",
+                            "cea95a6f5a6c4064919aa7ca71606f1e-1": "#6c3d002d"
+                        }
+                    },
+                    {
+                        "id": "740071079b3a4bd8a53e811fe6e12d45-1",
+                        "text": "\n\n\"It was like something out of a fairy tale,\" said one witness in an interview with this reporter.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-9": "#4161002f",
+                            "4e473195591a4b5f8b3699fa5794833d-2": "#8d3c0044",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-5": "#8b51005d",
+                            "1f1c9517b13743d0a65f306ca5db80bb-40": "#6e680059"
+                        }
+                    },
+                    {
+                        "id": "740071079b3a4bd8a53e811fe6e12d45-2",
+                        "text": " \"I've never seen anything like it.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "740071079b3a4bd8a53e811fe6e12d45-3",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "cea95a6f5a6c4064919aa7ca71606f1e",
+            "title": "Little Red Riding Hood Speaks Out on Campus Safety",
+            "paragraphs": [
+                [
+                    {
+                        "id": "cea95a6f5a6c4064919aa7ca71606f1e-0",
+                        "text": "Little Red Riding Hood has spoken out about her harrowing encounter on campus, urging students to be vigilant when walking alone near Poulton or on their way to the Laboratory of Analytic Sciences.",
+                        "targets": {
+                            "72126b9e19ca455da6e82025706baae4-2": "#cc290073",
+                            "740071079b3a4bd8a53e811fe6e12d45-0": "#48500029"
+                        }
+                    },
+                    {
+                        "id": "cea95a6f5a6c4064919aa7ca71606f1e-1",
+                        "text": "\n\n\"I just want everyone to be aware of what's going on around them,\" said Little Red Riding Hood in an interview with this reporter.",
+                        "targets": {
+                            "72126b9e19ca455da6e82025706baae4-2": "#82380039",
+                            "740071079b3a4bd8a53e811fe6e12d45-0": "#7138002e"
+                        }
+                    },
+                    {
+                        "id": "cea95a6f5a6c4064919aa7ca71606f1e-2",
+                        "text": " \"We need to look out for each other.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "cea95a6f5a6c4064919aa7ca71606f1e-3",
+                        "text": "\".",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "1f1c9517b13743d0a65f306ca5db80bb",
+            "title": "Dueling Column: Sexy? No. Practical? Yes: The reasons Hill Library is better than Hunt",
+            "paragraphs": [
+                [
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-0",
+                        "text": "I\u2019m sure everyone on campus has been to D.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-1",
+                        "text": "H.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-2",
+                        "text": " Hill Jr.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-3",
+                        "text": " Library at least once.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-4",
+                        "text": " Maybe it was on a tour before you were accepted to NC State, or maybe you\u2019re in there every night, studying until dawn.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-5",
+                        "text": " Regardless, you know Hill is the go-to, classic NC State library.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-6",
+                        "text": " \n\nI\u2019d say it\u2019s the best library on campus, but Hunt Library isn\u2019t even on main campus, so there\u2019s not much competition for that title.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-7",
+                        "text": "\n\nHill has one of the best places to study and work: the bookstacks.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-8",
+                        "text": " Head to any of the floors above the third and you\u2019ll find ample, quiet study spaces.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-9",
+                        "text": " It feels like exactly what you expect when you think of a library.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-10",
+                        "text": " The bookstacks at Hill are almost whimsical places to work and browse the titles of books you\u2019ll never read.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-11",
+                        "text": "\n\nMost places to work in Hunt look like a dystopian office space.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-12",
+                        "text": " Quite a few of the areas in Hunt seem solely designed to place you, and at least a hundred other people, in front of a desk.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-13",
+                        "text": " While this can also be argued about the base floors of Hill, you\u2019re still surrounded by books, lighting and seating that add color and character, and the spaces of isolation aren\u2019t nearly as big.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-14",
+                        "text": "\n\nThe closest thing you get to the bookstacks at Hunt is the bookBot, i.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-15",
+                        "text": "e.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-16",
+                        "text": ", not a study space.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-17",
+                        "text": " With a name like the bookBot, you might imagine a cute robot that guides you through the library and gently climbs shelves to retrieve your books.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-18",
+                        "text": " That is not at all the case.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-19",
+                        "text": "\n\nImagine an awkward shelf that moves across stacked, book-sized shipping containers.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-20",
+                        "text": " At least at Hill you can physically find the location of the books you want.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-21",
+                        "text": "\n\nNot only does Hill have superior study spaces, but it\u2019s also in a more convenient location.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-22",
+                        "text": " If you live on campus, you probably live on main campus, since Centennial Campus only has four places to live.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-6": "#82320034"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-23",
+                        "text": " Maybe you like the idea of feeling stranded in a library that you can\u2019t escape until you finish your work.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-24",
+                        "text": " But maybe it\u2019s also nice to have one within walking distance from classes and living.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-6": "#a3320053"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-25",
+                        "text": "\n\nThe furthest place you could live from Hill on main campus is Wolf Village.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-6": "#763c0032"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-26",
+                        "text": " While it is about a 20 minute walk, there is a direct Wolfline route that takes 10 minutes.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-6": "#6f39002d"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-27",
+                        "text": " Still, most students probably live closer.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-28",
+                        "text": "\n\nGoing to Hill also gives you the added benefit of access to Hillsborough Street.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-1": "#643f002c"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-29",
+                        "text": " If you need a break from studying, you can walk for five minutes and go get a bite to eat.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-6": "#d7240079"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-30",
+                        "text": " If nothing on Hillsborough Street sounds good, you can head down to the Atrium as well.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-1": "#6d3a002d"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-31",
+                        "text": "\n\nNot hungry? Take a quick walk around the Court of North Carolina or by the Hillsborough side of Kilgore and Scott Hall where all the plants are.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-1": "#7337002f"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-32",
+                        "text": "\n\nAn especially underrated aspect of Hill is the Exhibit Gallery.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-33",
+                        "text": " The current exhibit is on women\u2019s history at NC State and the prior was on the 100 year anniversary of Technician.",
+                        "targets": {
+                            "f631957d88c847dcbad2fd8002e3a986-5": "#a5270048",
+                            "f631957d88c847dcbad2fd8002e3a986-10": "#fb2600a4"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-34",
+                        "text": " While small, the exhibits are always polished and informative.",
+                        "targets": {
+                            "f631957d88c847dcbad2fd8002e3a986-5": "#d8240078",
+                            "f631957d88c847dcbad2fd8002e3a986-10": "#ea290095"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-35",
+                        "text": " There\u2019s also a little section where you can sit and see the Brickyard, which is nice when it isn\u2019t plagued by rampant construction.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-1": "#7b330031"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-36",
+                        "text": " If you haven\u2019t been, definitely check it out.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-37",
+                        "text": "\n\nWhile neither of these libraries are winning the sexiest building on campus title, Hunt doesn\u2019t get points for trying.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-38",
+                        "text": " Hill is a brick tower, but the view from Hillsborough Street offers a nice preview of the building and fills out the lawn space with tables and chairs.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-1": "#7038002e"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-39",
+                        "text": " Hunt looks like tacky aliens landed their ship there and the architects made it work.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-40",
+                        "text": " It feels like it\u2019s supposed to look like something, though I\u2019m not sure what.",
+                        "targets": {
+                            "d488ca4450744508be39abad163b1536-9": "#2b7d003b",
+                            "4e473195591a4b5f8b3699fa5794833d-2": "#9a46005d",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-5": "#8846004c",
+                            "740071079b3a4bd8a53e811fe6e12d45-1": "#9844005b"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-41",
+                        "text": "\n\nIt feels like Hunt wants to be the cornerstone library of NC State.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-42",
+                        "text": " In reality, it\u2019s the new kid on the block, and it\u2019s trying way too hard.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-0": "#c049008f",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-1": "#ae420071",
+                            "3660c4a344ef4db7a18b50e680437078-2": "#5f44002a",
+                            "cf180f8801fa41958ecf3c3e7af76519-2": "#4f4b0027",
+                            "f631957d88c847dcbad2fd8002e3a986-4": "#83510053"
+                        }
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-43",
+                        "text": " Hill is a classic, widely accessible library that has stood the test of time.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "1f1c9517b13743d0a65f306ca5db80bb-44",
+                        "text": " Hill Library has earned its title of Best Library.",
+                        "targets": {}
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "40e49c07b36d4054988014349813f54b",
+            "title": "Raleigh Welcomes the Timberwolves",
+            "paragraphs": [
+                [
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-0",
+                        "text": "The City of Raleigh is thrilled to welcome the Minnesota Timberwolves (NBA) as they bring their exciting brand of basketball to our capital city! In a special fundraising tournament, the Timberwolves will face off against local rivals and opponents from around the country in a thrilling showcase of hoops.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-1",
+                        "text": "\n\n\"We are beyond honored to have the Minnesota Timberwolves come to Raleigh,\" said Mayor Pro Tem, Sarah Johnson.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-2",
+                        "text": " \"This is an incredible opportunity for our community to experience top-level basketball while supporting a great cause.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#8438003a"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-3",
+                        "text": "\"\n\nThe tournament, dubbed \"Triangle Thermal Explosion,\" will take place on March 15-17 at PNC Arena in downtown Raleigh.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#c82b0070"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-4",
+                        "text": " The event promises to be an electrifying experience for fans of all ages, with the Timberwolves facing off against teams from around the country and a special game against the NC State Men's Basketball team, the Wolfpack.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-5",
+                        "text": "\n\n\"We're excited to bring our brand of basketball to Raleigh and give back to the community through this special fundraising tournament,\" said Tim Connelly, President of Basketball Operations for the Minnesota Timberwolves.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#87500056"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-6",
+                        "text": " \"Our team is passionate about engaging with fans and supporting local charities, and we can't wait to get started.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#a13d005d"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-7",
+                        "text": "\"\n\nThe Timberwolves will play against a series of opponents in a unique format that combines friendly competition with community outreach.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-8",
+                        "text": " The tournament's proceeds will benefit local organizations focused on youth education, health initiatives, and family support.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#c932007b"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-9",
+                        "text": " As part of that effort, the team will host a free event for the community at Hunt Library on NC State's campus.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#eb270094"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-10",
+                        "text": "\n\n\"We're looking forward to an incredible event that brings together the best basketball teams from around the country,\" added Connelly.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#8e350040"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-11",
+                        "text": " \"Our fans can expect high-flying action, exciting matchups, hilarious antics from their favorite mascot, Crunch the Wolf, and a chance to give back to the community.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#c130006e"
+                        }
+                    },
+                    {
+                        "id": "40e49c07b36d4054988014349813f54b-12",
+                        "text": "\"\n\nThe Twin Cities Thermal Explosion is presented by Rockfish Research and is made possible through the support of PNC Arena.",
+                        "targets": {
+                            "4e473195591a4b5f8b3699fa5794833d-3": "#953e0051"
+                        }
+                    }
+                ]
+            ]
+        },
+        {
+            "id": "f631957d88c847dcbad2fd8002e3a986",
+            "title": "NC State men\u2019s basketball head coach Kevin Keatts will not return",
+            "paragraphs": [
+                [
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-0",
+                        "text": "NC State Athletics announced in a press release Sunday that men\u2019s basketball head coach Kevin Keatts will not return, effective immediately, after eight seasons with the Wolfpack.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-1",
+                        "text": "\n\n\u201cI want to thank Coach Keatts for his contributions to NC State and for always representing the university with class,\u201d said Director of Athletics Boo Corrigan.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-2",
+                        "text": " \u201cHe will always have a treasured place in Wolfpack history for the accomplishments of his 2023-24 squad and I appreciate the passion he brought to this role.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-3",
+                        "text": " We wish him and his family the best in the future.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-4",
+                        "text": "\u201d\n\nIt\u2019s an unprecedented move after an unprecedented season.",
+                        "targets": {
+                            "04a7a54f36b54cea8b0c74f16567e1f0-0": "#8947004d",
+                            "04a7a54f36b54cea8b0c74f16567e1f0-1": "#86470049",
+                            "3660c4a344ef4db7a18b50e680437078-2": "#58470029",
+                            "cf180f8801fa41958ecf3c3e7af76519-2": "#46520027",
+                            "1f1c9517b13743d0a65f306ca5db80bb-42": "#80490048"
+                        }
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-5",
+                        "text": " NC State is the first team in NCAA history to miss its conference tournament after winning it and making the Final Four the year before.",
+                        "targets": {
+                            "1f1c9517b13743d0a65f306ca5db80bb-33": "#97320045",
+                            "1f1c9517b13743d0a65f306ca5db80bb-34": "#7f380036"
+                        }
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-6",
+                        "text": "\n\nKeatts joined the Wolfpack in 2017 after back-to-back seasons leading UNC-Wilmington to the NCAA Tournament.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-7",
+                        "text": " In his time with the Wolfpack, Keatts had an all-time record of 151-113, a conference record of 69-84, one conference championship and three NCAA Tournament appearances, including last season\u2019s miracle Final Four run.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-8",
+                        "text": "\n\nThe Wolfpack failed to build on last season\u2019s success, finishing with a 12-19 record and tying the program\u2019s longest losing streak after nine-straight losses.",
+                        "targets": {
+                            "9141fa23639d4441bc8e495171f96c89-4": "#6c3a002c"
+                        }
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-9",
+                        "text": " Twice in the last four seasons, Keatts\u2019 teams have recorded win totals of 12 and 11.",
+                        "targets": {}
+                    },
+                    {
+                        "id": "f631957d88c847dcbad2fd8002e3a986-10",
+                        "text": "\n\nThe press release announcing Keatts\u2019 dismissal said a national search for NC State\u2019s next head coach will begin immediately.",
+                        "targets": {
+                            "1f1c9517b13743d0a65f306ca5db80bb-33": "#c0280065",
+                            "1f1c9517b13743d0a65f306ca5db80bb-34": "#933a0049"
+                        }
+                    }
+                ]
+            ]
+        }
+    ]
+}
+  </div>
+  <!-- ========= JS LOGIC ========= -->
+  <script>
+    /********************** INITIAL DATA **********************/
+    const { documents = [] } = JSON.parse(document.getElementById('doc-data').textContent || '{}');
+
+    const docIndex = Object.fromEntries(documents.map(d => [d.id, d]));
+
+    /* Elements */
+    const $srcSel  = $('#source-selector');
+    const $tgtSel  = $('#target-selector');
+    const $srcArea = $('#src .content-area');
+    const $tgtArea = $('#tgt .content-area');
+    const $links   = $('#links');
+    const $wrapper = $('#wrapper');
+
+    /* Build source dropdown */
+    function fillSelect($sel, list) {
+      $sel.empty().append('<option value="">Choose…</option>');
+      list.forEach(d => $sel.append(`<option value="${d.id}">${d.title}</option>`));
+    }
+    fillSelect($srcSel, documents);
+
+    /********************** STATE **********************/
+    let linkTable = {};          // srcSentenceId -> { tgtSentenceId: level }
+    let currentSourceId = null;
+    let currentTargetId = null;
+
+    /********************** RENDERING **********************/
+    function renderDoc($area, doc, isSource) {
+      if (!doc) return;
+      if (isSource) linkTable = {};
+
+      const html = [`<h3 class="article-title">${doc.title}</h3>`];
+      doc.paragraphs.forEach(p => {
+        html.push('<p class="paragraph">');
+        p.forEach(({ id, text, targets = {} }) => {
+          if (isSource) linkTable[id] = targets;
+          const bold = isSource && currentTargetId && Object.keys(targets).some(tid => tid.startsWith(currentTargetId + '-'));
+          html.push(`<span class="sentence${bold ? ' source-key' : ''}" id="${id}">${text}</span>`);
+        });
+        html.push('</p>');
+      });
+      $area.html(html.join(''));
+    }
+
+    function refreshTargetDropdown() {
+      const docIds = new Set();
+      Object.values(linkTable).forEach(map => Object.keys(map).forEach(tid => docIds.add(tid.split('-')[0])));
+      const allowed = documents.filter(d => docIds.has(d.id));
+      fillSelect($tgtSel, allowed);
+      $tgtSel.prop('disabled', !allowed.length);
+      $('#load-target').prop('disabled', true);
+    }
+
+    function refreshSourceBold() {
+      $('#src .sentence').removeClass('source-key');
+      if (!currentTargetId) return;
+      Object.entries(linkTable).forEach(([sid, map]) => {
+        if (Object.keys(map).some(tid => tid.startsWith(currentTargetId + '-')))
+          $('#' + sid).addClass('source-key');
+      });
+    }
+
+     function preColorTarget() {
+        $('#tgt .sentence').css('background-color', '');
+        const colored = new Set();
+        // Iterate source sentences in DOM order for deterministic first‑seen mapping
+        $('#src .sentence').each(function () {
+          const sid = this.id;
+          const map = linkTable[sid] || {};
+          Object.entries(map).forEach(([tid, rgb]) => {
+            if (colored.has(tid)) return; /* TODO: Average these instead of going with the first */
+            if (currentTargetId && tid.startsWith(currentTargetId + '-')) {
+              $('#' + tid).css('background-color', rgb);
+              colored.add(tid);
+            }
+          });
+        });
+      }
+
+    /********************** CONNECTORS **********************/
+    function drawConnectors($left) {
+      const box = $wrapper[0].getBoundingClientRect();
+      $links.attr({ width: box.width, height: box.height }).empty();
+      if (!($left && $left.length)) return;
+
+      const srcR = $left[0].getBoundingClientRect();
+      const x1   = srcR.right - box.left;
+      const y1   = (srcR.top + srcR.bottom) / 2 - box.top;
+      const map  = linkTable[$left.attr('id')] || {};
+
+      Object.keys(map).forEach(tid => {
+        const $tgt = $('#' + tid);
+        if (!$tgt.length) return;
+        const tR = $tgt[0].getBoundingClientRect();
+        const x2 = tR.left - box.left;
+        const y2 = (tR.top + tR.bottom) / 2 - box.top;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', '#6b7280');
+        line.setAttribute('stroke-width', '1.3');
+        line.setAttribute('stroke-opacity', '0.75');
+        $links[0].appendChild(line);
+      });
+    }
+
+    function activate($left) {
+      // Clear previous highlights & paragraph backgrounds
+      $('#src .sentence, #tgt .sentence').removeClass('active');
+      if (!($left && $left.length)) { drawConnectors(null); return; }
+
+      // Highlight selected source sentence
+      $left.addClass('active');
+
+      // Apply RGB backgrounds to linked target paragraphs
+      const map = linkTable[$left.attr('id')] || {};
+      Object.entries(map).forEach(([tid, rgb]) => {
+        const $tSent = $('#' + tid);
+        if ($tSent.length) {
+          $tSent.addClass('active');
+          $tSent.css('background-color', rgb);
+        }
+      });
+
+      drawConnectors($left);
+    }
+
+    /********************** SCROLL & CLICK SYNC **********************/
+    const scrollTo = ($c, $e) => { if ($e && $e.length) $c.stop().animate({ scrollTop: $e.position().top + $c.scrollTop() - 20 }, 200); };
+
+   function leftSelect($l) {
+      activate($l);
+      const map = linkTable[$l?.attr('id')] || {};
+      const tgtIdsInCurrent = Object.keys(map)
+            .filter(tid => currentTargetId && tid.startsWith(currentTargetId + '-'));
+      const firstId = tgtIdsInCurrent[0];
+      scrollTo($tgtArea, $('#' + firstId));
+    }
+
+    function rightSelect($r) {
+      const srcId = Object.keys(linkTable).find(sid => linkTable[sid][$r.attr('id')]);
+      if (srcId) leftSelect($('#' + srcId));
+    }
+
+    function tryInit() {
+      const $first = $('#src .sentence').first();
+      if ($first.length && $('#tgt .sentence').length) leftSelect($first);
+    }
+
+    /********************** LOAD HELPERS **********************/
+    function loadSourceById(id) {
+      if (!id) return;
+      currentSourceId = id;
+      currentTargetId = null;
+      renderDoc($srcArea, docIndex[id], true);
+      refreshTargetDropdown();
+      refreshSourceBold();
+      tryInit();
+    }
+
+    function loadTargetById(id) {
+      if (!id) return;
+      currentTargetId = id;
+      renderDoc($tgtArea, docIndex[id], false);  
+      refreshSourceBold();
+      preColorTarget();
+      const $cur = $('#src .sentence.active'); 
+      if ($cur.length) leftSelect($cur); else tryInit();
+    }
+
+    /********************** EVENT BINDINGS **********************/
+    // Enable buttons on selection
+    $srcSel.on('change', () => $('#load-source').prop('disabled', !$srcSel.val()));
+    $tgtSel.on('change', () => $('#load-target').prop('disabled', !$tgtSel.val()));
+
+    // Load buttons
+    $('#load-source').on('click', () => loadSourceById($srcSel.val()));
+    $('#load-target').on('click', () => loadTargetById($tgtSel.val()));
+
+    // Swap button
+    $('#swap-btn').on('click', () => {
+      if (!currentSourceId || !currentTargetId) return;
+      const oldSrc = currentSourceId;
+      const oldTgt = currentTargetId;
+      $srcSel.val(oldTgt);
+      $tgtSel.val(oldSrc);
+      loadSourceById(oldTgt);
+      loadTargetById(oldSrc);
+    });
+
+    // Sentence clicks
+    $('#src').on('click', '.sentence', e => leftSelect($(e.currentTarget)));
+    $('#tgt').on('click', '.sentence', e => rightSelect($(e.currentTarget)));
+
+    // Scroll listeners attached directly to scrolling panes
+    $srcArea.on('scroll', () => drawConnectors($('#src .sentence.active')));
+    $tgtArea.on('scroll', () => drawConnectors($('#src .sentence.active')));
+
+    // Window resize
+    $(window).on('resize', () => drawConnectors($('#src .sentence.active')));
+
+    // Help toggle
+    $('#help-toggle').on('click', function () {
+      $('#help-panel').slideToggle(180);
+      $(this).text($('#help-panel').is(':visible') ? 'Help ▴' : 'Help ▾');
+    });
+  </script>
+</body>
+</html>

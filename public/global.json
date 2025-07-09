@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/GlobalConfigSchema.json",
   "configsList": [
+    "contradiction",
     "scads-llm-uncertainty",
     "video-provenance",
     "opacity-study",
@@ -42,6 +43,9 @@
     "test-step-logic"
   ],
   "configs": {
+    "contradiction": {
+      "path": "contradiction/config.json"
+    },
     "scads-llm-uncertainty": {
       "path": "scads-llm-uncertainty/config.json"
     },

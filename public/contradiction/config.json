@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/StudyConfigSchema.json",
+  "studyMetadata": {
+    "title": "Contradiction",
+    "version": "pilot",
+    "authors": [
+      "The reVISit Team"
+    ],
+    "date": "2023-04-14",
+    "description": "A simple demo of using stimuli in an HTML file that renders a D3 visualization. Data is collected via a numeric response field.",
+    "organizations": [
+      "University of Utah",
+      "WPI",
+      "University of Toronto"
+    ]
+  },
+  "uiConfig": {
+    "contactEmail": "contact@revisit.dev",
+    "helpTextPath": "contradiction/assets/help.md",
+    "logoPath": "revisitAssets/revisitLogoSquare.svg",
+    "withProgressBar": true,
+    "autoDownloadStudy": false,
+    "sidebar": true,
+    "windowEventDebounceTime": 200
+  },
+  "components": {
+    "introduction": {
+      "type": "markdown",
+      "path": "contradiction/assets/introduction.md",
+      "response": []
+    },
+    "external_website": {
+      "type": "website",
+      "path": "contradiction/assets/nli-explorer.html",
+      "description": "Which contradiction is best?",
+      "instruction": "Please review the provided summary and source documents.",
+      "response": [
+        {
+         "id": "q-contradiction1",
+         "prompt": "Can you use the interface to explore possible contradiction?",
+         "location": "sidebar",
+         "type": "longText",
+         "placeholder": "Please explain"
+        }
+      ]
+    }
+  },
+  "sequence": {
+    "order": "fixed",
+    "components": [
+      "introduction",
+      "external_website"
+    ]
+  }
+}

@@ -37,6 +37,8 @@ export function TextAreaInput({
         </Flex>
       )}
       description={secondaryText}
+      autosize
+      minRows={3}
       radius="md"
       size="md"
       {...answer}
