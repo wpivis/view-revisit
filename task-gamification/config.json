@@ -26,6 +26,21 @@
             "path": "task-gamification/assets/introduction.md",
             "response": []
         },
+        "figma":{
+            "type": "website",
+            "path": "https://embed.figma.com/proto/7n75Gb7V22qFKd9JJSnAi0/Gamified?page-id=0%3A1&node-id=30-1541&p=f&viewport=-1429%2C1280%2C0.47&scaling=scale-down&content-scaling=fixed&embed-host=share",
+            "description": "Which is best?",
+          "instruction": "Please review the provided prototype.",
+          "response": [
+            {
+             "id": "q-prototype1",
+             "prompt": "Can you use the interface to explore?",
+             "location": "sidebar",
+             "type": "longText",
+             "placeholder": "Please explain"
+            }
+          ]
+        },
         "past-experience-survey": {
             "type": "questionnaire",
             "response": [
@@ -158,6 +173,7 @@
         "order": "fixed",
         "components": [
             "introduction",
+            "figma",
             "past-experience-survey",
             "P1-dashboard",
             "P2-list",
