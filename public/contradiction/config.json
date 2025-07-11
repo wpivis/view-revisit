@@ -29,6 +29,31 @@
       "path": "contradiction/assets/introduction.md",
       "response": []
     },
+    "consent": {
+      "type": "markdown",
+      "path": "contradiction/assets/consent.md",
+      "response": []
+    },
+    "pretask": {
+      "type": "markdown",
+      "path": "contradiction/assets/pretask.md",
+      "response": []
+    },
+    "posttask": {
+      "type": "markdown",
+      "path": "contradiction/assets/posttask.md",
+      "response": []
+    },
+    "survey": {
+      "type": "markdown",
+      "path": "contradiction/assets/survey.md",
+      "response": []
+    },
+    "thank": {
+      "type": "markdown",
+      "path": "contradiction/assets/thank.md",
+      "response": []
+    },
     "external_website": {
       "type": "website",
       "path": "contradiction/assets/nli-explorer.html",
@@ -48,8 +73,12 @@
   "sequence": {
     "order": "fixed",
     "components": [
+      "consent",
       "introduction",
-      "external_website"
+      "pretask",
+      "external_website",
+      "posttask",
+      "survey"
     ]
   }
 }
