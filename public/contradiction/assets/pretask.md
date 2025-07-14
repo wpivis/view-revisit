@@ -1,6 +1,6 @@
-# Screen 3: Contradiction Explorer
+# Contradiction Explorer
 
-## PART II: Task (8 minutes)
+## PART II: Task Introduction (4 minutes)
 
 **Overview**
 
@@ -10,9 +10,9 @@ This task involves reviewing AI-generated summaries within a fictional intellige
 
 After producing your answers to the RFI, you’ll answer brief questions about your experience. 
 
-**\*\*\***
+---
 
-**Mission Briefing**
+### Mission Briefing
 
 **Organization:** The Big Bad Wolf Syndicate (BBWS) is a domestic terrorism group known for nefarious plans and often engages in illegal activities and intimidation including kidnapping of elderly ladies.
 
@@ -22,7 +22,10 @@ After producing your answers to the RFI, you’ll answer brief questions about y
 
 **Person of interest:** Mr. Wuf, NCSU’s mascot has previous relationships with wolves in the BBWS, but unclear of his allegiance.
 
-**RFI:** Raleigh Police must improve its understanding of Mr. Wuf's movements, activities,  and network connections. By assessing whether he poses a credible threat in relation to terrorist activities unfolding on campus, they can determine if additional resources should be allocated to monitor his movements or focus on more promising targets.
+---
+
+### RFI 
+Raleigh Police must improve its understanding of Mr. Wuf's movements, activities,  and network connections. By assessing whether he poses a credible threat in relation to terrorist activities unfolding on campus, they can determine if additional resources should be allocated to monitor his movements or focus on more promising targets.
 
 You have 8 minutes to review the documents and compile the answers with certainty scores to the following questions:
 
@@ -31,17 +34,3 @@ You have 8 minutes to review the documents and compile the answers with certaint
 3. Is there evidence to indicate the NCSU police increase surveillance on Mr. Wuf?
 
 You will receive a warning when there is 1 minute left to finish the task. 
-
-**Report Deliverable:**
-
-1. What is the relationship between Mr. Wuf, his family, and suspicious activity in Raleigh?   
-   1. Situational overview \- open text  
-   2. Certainty score \- need to pull from example  
-2. Is there evidence to indicate the NCSU police increase surveillance on Mr. Wuf?  
-   1. Not at all likely to Highly likely  
-   2. Certainty Score  
-   3. Comments (optional) \- open text  
-3. Is the Big Bad Wolf Syndicate operating in Raleigh?  
-   1. Not at all likely to Highly likely  
-   2. Certainty score  
-   3. Comments (optional) \- open text
