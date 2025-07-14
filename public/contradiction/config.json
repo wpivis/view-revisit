@@ -39,56 +39,6 @@
       "path": "contradiction/assets/pretask.md",
       "response": []
     },
-    "posttask": {
-      "type": "markdown",
-      "path": "contradiction/assets/posttask.md",
-      "response": [
-        {
-          "id": "q-post-experience",
-          "prompt": "What was your experience using Contradiction Explorer in content triage for this task?",
-          "location": "belowStimulus",
-          "type": "longText",
-          "placeholder": "Please describe"
-        },
-        {
-          "id": "q-post-challenges",
-          "prompt": "How did Contradiction Explorer address challenges you typically face in the content triage workflow?",
-          "location": "belowStimulus",
-          "type": "longText",
-          "placeholder": "Please describe"
-        }
-      ]
-    },
-    "posttask-likert": {
-      "type": "markdown",
-      "path": "contradiction/assets/posttasklikert.md",
-      "response": [
-        {
-          "id": "q-post-improvements",
-          "prompt": "What recommendations for improvements on this study do you have?",
-          "location": "belowStimulus",
-          "type": "longText",
-          "placeholder": "Please describe"
-        }
-      ]
-    },
-    "survey": {
-      "type": "markdown",
-      "path": "contradiction/assets/survey.md",
-      "response": [        
-        {
-          "id": "q-post-final",
-          "prompt": "Do you have any other thoughts/feelings/or comments about this project and task that you would like to share?",
-          "location": "belowStimulus",
-          "type": "longText",
-          "placeholder": "Please describe"
-        }]
-    },
-    "thank": {
-      "type": "markdown",
-      "path": "contradiction/assets/thank.md",
-      "response": []
-    },
     "external_website": {
       "type": "website",
       "path": "contradiction/assets/nli-explorer.html",
@@ -161,6 +111,77 @@
          ]
         }
       ]
+    },
+    "posttask": {
+      "type": "markdown",
+      "path": "contradiction/assets/posttask.md",
+      "response": [
+        {
+          "id": "q-post-experience",
+          "prompt": "What was your experience using Contradiction Explorer in content triage for this task?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        },
+        {
+          "id": "q-post-challenges",
+          "prompt": "How did Contradiction Explorer address challenges you typically face in the content triage workflow?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        }
+      ]
+    },
+    "posttask-likert": {
+      "type": "markdown",
+      "path": "contradiction/assets/posttasklikert.md",
+      "response": [
+        {
+          "id": "q-task-difficulty",
+          "prompt": "Task difficulty (i.e. assessing contradictions to complete the report).",
+          "location": "belowStimulus",
+          "type": "radio",
+          "options": [
+            "Not at all difficult",
+            "Not very difficult",
+            "Neither difficult nor not difficult",
+            "Difficult",
+            "Very difficult"
+          ],
+          "horizontal": true
+        },
+        {
+          "id": "q-task-relevance",
+          "prompt": "Task relevance to experience (i.e. 'This is/is not the kind of task I perform in my role.')",
+          "location": "belowStimulus",
+          "type": "radio",
+          "options": [
+            "Not at all relevant",
+            "Not very relevant",
+            "Neither relevant nor not relevant",
+            "Relevant",
+            "Very relevant"
+          ],
+          "horizontal": true
+        }
+      ]
+    },
+    "survey": {
+      "type": "markdown",
+      "path": "contradiction/assets/survey.md",
+      "response": [        
+        {
+          "id": "q-post-final",
+          "prompt": "Do you have any other thoughts/feelings/or comments about this project and task that you would like to share?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        }]
+    },
+    "thank": {
+      "type": "markdown",
+      "path": "contradiction/assets/thank.md",
+      "response": []
     }
   },
   "sequence": {
