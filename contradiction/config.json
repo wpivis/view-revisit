@@ -59,10 +59,30 @@
         }
       ]
     },
+    "posttask-likert": {
+      "type": "markdown",
+      "path": "contradiction/assets/posttasklikert.md",
+      "response": [
+        {
+          "id": "q-post-improvements",
+          "prompt": "What recommendations for improvements on this study do you have?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        }
+      ]
+    },
     "survey": {
       "type": "markdown",
       "path": "contradiction/assets/survey.md",
-      "response": []
+      "response": [        
+        {
+          "id": "q-post-final",
+          "prompt": "Do you have any other thoughts/feelings/or comments about this project and task that you would like to share?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        }]
     },
     "thank": {
       "type": "markdown",
@@ -89,11 +109,9 @@
          "type": "dropdown",
          "placeholder": "Select certainty",
          "options": [
-           "Not at all certain",
-           "Somewhat uncertain",
-           "Neutral",
-           "Somewhat certain",
-           "Very certain"
+           "High Certainty",
+           "Medium Certainty",
+           "Low Certainty"
          ]
         },
         {
@@ -117,11 +135,9 @@
          "type": "dropdown",
          "placeholder": "Select certainty",
          "options": [
-           "Not at all certain",
-           "Somewhat uncertain",
-           "Neutral",
-           "Somewhat certain",
-           "Very certain"
+           "High Certainty",
+           "Medium Certainty",
+           "Low Certainty"
          ]
         },
         {
@@ -145,11 +161,9 @@
          "type": "dropdown",
          "placeholder": "Select certainty",
          "options": [
-           "Not at all certain",
-           "Somewhat uncertain",
-           "Neutral",
-           "Somewhat certain",
-           "Very certain"
+           "High Certainty",
+           "Medium Certainty",
+           "Low Certainty"
          ]
         }
       ]
@@ -163,6 +177,7 @@
       "pretask",
       "external_website",
       "posttask",
+      "posttask-likert",
       "survey"
     ]
   }
