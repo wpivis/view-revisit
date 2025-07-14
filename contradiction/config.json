@@ -42,7 +42,22 @@
     "posttask": {
       "type": "markdown",
       "path": "contradiction/assets/posttask.md",
-      "response": []
+      "response": [
+        {
+          "id": "q-post-experience",
+          "prompt": "What was your experience using Contradiction Explorer in content triage for this task?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        },
+        {
+          "id": "q-post-challenges",
+          "prompt": "How did Contradiction Explorer address challenges you typically face in the content triage workflow?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
+        }
+      ]
     },
     "survey": {
       "type": "markdown",
@@ -61,11 +76,81 @@
       "instruction": "Please review the provided summary and source documents.",
       "response": [
         {
-         "id": "q-contradiction1",
-         "prompt": "Can you use the interface to explore possible contradiction?",
+         "id": "q-relationship-assessment",
+         "prompt": "What is the relationship between Mr. Wuf, his family, and suspicious activity in Raleigh?",
          "location": "sidebar",
          "type": "longText",
          "placeholder": "Please explain"
+        },
+        {
+         "id": "q-relationship-certainty",
+         "prompt": "How certain are you about your answer to the previous question?",
+         "location": "sidebar",
+         "type": "dropdown",
+         "placeholder": "Select certainty",
+         "options": [
+           "Not at all certain",
+           "Somewhat uncertain",
+           "Neutral",
+           "Somewhat certain",
+           "Very certain"
+         ]
+        },
+        {
+         "id": "q-surveillance-assessment",
+         "prompt": "Is there evidence to indicate the NCSU police increase surveillance on Mr. Wuf?",
+         "location": "sidebar",
+         "type": "dropdown",
+         "placeholder": "Select an option",
+         "options": [
+           "Not at all likely",
+           "Somewhat unlikely",
+           "Neutral",
+           "Somewhat likely",
+           "Highly likely"
+         ]
+        },
+        {
+         "id": "q-surveillance-certainty",
+         "prompt": "How certain are you about your answer to the previous question?",
+         "location": "sidebar",
+         "type": "dropdown",
+         "placeholder": "Select certainty",
+         "options": [
+           "Not at all certain",
+           "Somewhat uncertain",
+           "Neutral",
+           "Somewhat certain",
+           "Very certain"
+         ]
+        },
+        {
+         "id": "q-operating-assessment",
+         "prompt": "Is the Big Bad Wolf Syndicate operating in Raleigh?",
+         "location": "sidebar",
+         "type": "dropdown",
+         "placeholder": "Select an option",
+         "options": [
+           "Not at all likely",
+           "Somewhat unlikely",
+           "Neutral",
+           "Somewhat likely",
+           "Highly likely"
+         ]
+        },
+        {
+         "id": "q-operating-certainty",
+         "prompt": "How certain are you about your answer to the previous question?",
+         "location": "sidebar",
+         "type": "dropdown",
+         "placeholder": "Select certainty",
+         "options": [
+           "Not at all certain",
+           "Somewhat uncertain",
+           "Neutral",
+           "Somewhat certain",
+           "Very certain"
+         ]
         }
       ]
     }
