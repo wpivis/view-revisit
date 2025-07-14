@@ -116,16 +116,13 @@
         },
         {
          "id": "q-surveillance-assessment",
-         "prompt": "Is there evidence to indicate the NCSU police increase surveillance on Mr. Wuf?",
+         "prompt": "Is there sufficient evidence to indicate the NCSU police increase surveillance on Mr. Wuf?",
          "location": "sidebar",
          "type": "dropdown",
          "placeholder": "Select an option",
          "options": [
-           "Not at all likely",
-           "Somewhat unlikely",
-           "Neutral",
-           "Somewhat likely",
-           "Highly likely"
+           "Yes - Increase surveillance",
+           "No - Do not increase surveillance"
          ]
         },
         {
@@ -147,11 +144,8 @@
          "type": "dropdown",
          "placeholder": "Select an option",
          "options": [
-           "Not at all likely",
-           "Somewhat unlikely",
-           "Neutral",
-           "Somewhat likely",
-           "Highly likely"
+           "Yes - BBWS activity indicated",
+           "No - BBWS activity not indicated"
          ]
         },
         {
