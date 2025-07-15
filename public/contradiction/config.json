@@ -1,17 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/StudyConfigSchema.json",
   "studyMetadata": {
-    "title": "Contradiction",
-    "version": "pilot",
+    "title": "Contradiction Explorer",
+    "version": "pilot-v1.0.0",
     "authors": [
       "The reVISit Team"
     ],
-    "date": "2023-04-14",
-    "description": "A simple demo of using stimuli in an HTML file that renders a D3 visualization. Data is collected via a numeric response field.",
+    "date": "2025-07-15",
+    "description": "This study explores the use of Contradiction Explorer in content triage.",
     "organizations": [
-      "University of Utah",
       "WPI",
-      "University of Toronto"
+      "LAS",
+      "NCSU",
+      "Rockfish"
     ]
   },
   "uiConfig": {
@@ -24,14 +25,14 @@
     "windowEventDebounceTime": 200
   },
   "components": {
-    "introduction": {
+    "experience": {
       "type": "markdown",
-      "path": "contradiction/assets/introduction.md",
+      "path": "contradiction/assets/experience.md",
       "response": []
     },
-    "consent": {
+    "overview": {
       "type": "markdown",
-      "path": "contradiction/assets/consent.md",
+      "path": "contradiction/assets/overview.md",
       "response": []
     },
     "pretask": {
@@ -39,40 +40,41 @@
       "path": "contradiction/assets/pretask.md",
       "response": []
     },
+    "briefing": {
+      "type": "markdown",
+      "path": "contradiction/assets/briefing.md",
+      "response": []
+    },
+    "demo_website": {
+      "type": "website",
+      "path": "contradiction/assets/nli-explorer.html",
+      "description": "Which contradiction is best?",
+      "instruction": "Take a few minutes to familiarize yourself with Contradiction Explorer.\n\nYou may want to:\n - Learn about how the tool works by clicking the \"Quick Start Guide\"\n - Load a source document\n - Click on a target document\n - Click on **bolded sentences in the source document** that are identified as having a relationship with the target document\n\nWhen you are ready to begin the fictional scenario task, please click \"Next.\"",
+      "response": []
+    },
     "external_website": {
       "type": "website",
       "path": "contradiction/assets/nli-explorer.html",
       "description": "Which contradiction is best?",
-      "instruction": "Please review the provided summary and source documents.",
+      "instruction": "You will have 8 minutes to review the documents and provide answers with certainty scores to the following questions:",
       "response": [
         {
          "id": "q-relationship-assessment",
-         "prompt": "What is the relationship between Mr. Wuf, his family, and suspicious activity in Raleigh?",
+         "prompt": "What relevant contradictory information can you find about Mr. Wuf’s role in the disappearance of Granny?",
          "location": "sidebar",
          "type": "longText",
          "placeholder": "Please explain"
         },
         {
-         "id": "q-relationship-certainty",
-         "prompt": "How certain are you about your answer to the previous question?",
-         "location": "sidebar",
-         "type": "dropdown",
-         "placeholder": "Select certainty",
-         "options": [
-           "High Certainty",
-           "Medium Certainty",
-           "Low Certainty"
-         ]
-        },
-        {
          "id": "q-surveillance-assessment",
-         "prompt": "Is there sufficient evidence to indicate the NCSU police increase surveillance on Mr. Wuf?",
+         "prompt": "Based on the documents provided, do you recommend that the NCSU police allocate more resources to increase surveillance on Mr. Wuf?",
          "location": "sidebar",
          "type": "dropdown",
          "placeholder": "Select an option",
          "options": [
-           "Yes - Increase surveillance",
-           "No - Do not increase surveillance"
+           "Decrease level of surveillance",
+           "Maintain level of surveillance",
+           "Increase level of surveillance"
          ]
         },
         {
@@ -88,14 +90,22 @@
          ]
         },
         {
+         "id": "q-surveillance-rationale",
+         "prompt": "Please explain your reasoning for the previous question.",
+         "location": "sidebar",
+         "required": false,
+         "type": "longText",
+         "placeholder": "Please explain"
+        },
+        {
          "id": "q-operating-assessment",
          "prompt": "Is the Big Bad Wolf Syndicate operating in Raleigh?",
          "location": "sidebar",
          "type": "dropdown",
          "placeholder": "Select an option",
          "options": [
-           "Yes - BBWS activity indicated",
-           "No - BBWS activity not indicated"
+           "Yes, BBWS activity indicated.",
+           "No, BBWS activity not indicated."
          ]
         },
         {
@@ -109,6 +119,14 @@
            "Medium Certainty",
            "Low Certainty"
          ]
+        },
+        {
+         "id": "q-operating-rationale",
+         "prompt": "Please explain your reasoning for the previous question.",
+         "location": "sidebar",
+         "required": false,
+         "type": "longText",
+         "placeholder": "Please explain"
         }
       ]
     },
@@ -118,14 +136,14 @@
       "response": [
         {
           "id": "q-post-experience",
-          "prompt": "What was your experience using Contradiction Explorer in content triage for this task?",
+          "prompt": "What did you notice while you were using Contradiction Explorer?",
           "location": "belowStimulus",
           "type": "longText",
           "placeholder": "Please describe"
         },
         {
           "id": "q-post-challenges",
-          "prompt": "How did Contradiction Explorer address challenges you typically face in the content triage workflow?",
+          "prompt": "How did Contradiction Explorer address challenges with conflicting information you typically face in research?",
           "location": "belowStimulus",
           "type": "longText",
           "placeholder": "Please describe"
@@ -145,8 +163,8 @@
             "Not at all difficult",
             "Not very difficult",
             "Neither difficult nor not difficult",
-            "Difficult",
-            "Very difficult"
+            "Somewhat Difficult",
+            "Difficult"
           ],
           "horizontal": true
         },
@@ -163,6 +181,13 @@
             "Very relevant"
           ],
           "horizontal": true
+        },
+        {
+          "id": "q-task-recommendations",
+          "prompt": "What recommendations for improvements on this study do you have?",
+          "location": "belowStimulus",
+          "type": "longText",
+          "placeholder": "Please describe"
         }
       ]
     },
@@ -174,9 +199,11 @@
           "id": "q-post-final",
           "prompt": "Do you have any other thoughts/feelings/or comments about this project and task that you would like to share?",
           "location": "belowStimulus",
+          "required": false,
           "type": "longText",
           "placeholder": "Please describe"
-        }]
+        }
+      ]
     },
     "thank": {
       "type": "markdown",
@@ -187,9 +214,11 @@
   "sequence": {
     "order": "fixed",
     "components": [
-      "consent",
-      "introduction",
+      "overview",
+      "experience",
       "pretask",
+      "demo_website",
+      "briefing",
       "external_website",
       "posttask",
       "posttask-likert",

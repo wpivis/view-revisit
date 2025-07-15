@@ -1,6 +1,6 @@
-# Screen 4: Design & Feasibility
+# Design & Feasibility
 
-## PART III: Design Evaluation & Feasibility Assessment (1.5 minutes)
+## PART III: Design Evaluation & Feasibility Assessment (3 minutes)
 
 Please think aloud or write your answer to the following questions. 
 
