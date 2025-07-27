@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.1.1/src/parser/GlobalConfigSchema.json",
   "configsList": [
+    "productivity-manager",
     "contradiction",
     "scads-llm-uncertainty",
     "video-provenance",
@@ -43,6 +44,9 @@
     "test-step-logic"
   ],
   "configs": {
+    "productivity-manager": {
+      "path": "productivity-manager/config.json"
+    },
     "contradiction": {
       "path": "contradiction/config.json"
     },
